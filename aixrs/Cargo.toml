@@ -1,0 +1,16 @@
+[package]
+name = "aixrs"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["staticlib"]
+
+[dependencies]
+shakmaty = { version = "0.30", features = ["bincode"] }
+aix-chess-compression = { path = "../aix-chess-compression" }
+diplomat = "0.14.0"
+diplomat-runtime = "0.14.0"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+bincode = "2.0"

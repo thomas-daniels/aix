@@ -1,0 +1,13 @@
+[package]
+name = "aix-chess-compression"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+chess-huffman = "0.12.1"
+shakmaty = "0.30"
+bitm = "0.5"
+
+[dev-dependencies]
+quickcheck = "1"
+quickcheck_macros = "1.1"

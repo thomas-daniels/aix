@@ -1,0 +1,54 @@
+# name: test/sql/moved_pieces.test
+# description: test moved_pieces(_list) function
+# group: [sql]
+
+
+require aixchess
+
+
+query I
+SELECT moved_pieces('\x9F-\x84\x1C\x1A\x9D:\xBD\xB3\xB8'::BLOB);
+----
+PpBnNpKnPbBkNkQnQkQ
+
+
+query I
+SELECT moved_pieces('\x0C\x1C4$\x05\x1A9*\x06\x151)\x04\x07>-\x0A\x12=\x22\x9A5\xBC5\x15&5>\x03\x11-#\x91#>=#5\x00'::BLOB);
+----
+PpBnNpKnPbBkNkQnQkQ
+
+
+query I
+SELECT moved_pieces('<]\x93.\x0DT?\xE2\xEC\xDE\xEFaFR\x973\xDB\x03v'::BLOB);
+----
+PpBnNpKnPbBkNkQnQkQ
+
+
+query I
+SELECT TRY(moved_pieces('invalid'::BLOB));
+----
+NULL
+
+
+query I
+SELECT moved_pieces_list('\x9F-\x84\x1C\x1A\x9D:\xBD\xB3\xB8'::BLOB);
+----
+[P, p, B, n, N, p, K, n, P, b, B, k, N, k, Q, n, Q, k, Q]
+
+
+query I
+SELECT moved_pieces_list('\x0C\x1C4$\x05\x1A9*\x06\x151)\x04\x07>-\x0A\x12=\x22\x9A5\xBC5\x15&5>\x03\x11-#\x91#>=#5\x00'::BLOB);
+----
+[P, p, B, n, N, p, K, n, P, b, B, k, N, k, Q, n, Q, k, Q]
+
+
+query I
+SELECT moved_pieces_list('<]\x93.\x0DT?\xE2\xEC\xDE\xEFaFR\x973\xDB\x03v'::BLOB);
+----
+[P, p, B, n, N, p, K, n, P, b, B, k, N, k, Q, n, Q, k, Q]
+
+
+query I
+SELECT TRY(moved_pieces_list('invalid'::BLOB));
+----
+NULL

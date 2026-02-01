@@ -1,0 +1,24 @@
+# name: test/sql/clocks_to_move_times.test
+# description: test clocks_to_move_times
+# group: [sql]
+
+
+require aixchess
+
+
+query I
+SELECT clocks_to_move_times([ 180, 180, 178, 179, 170, 165 ]::USMALLINT[], 1);
+----
+[1, 3, 0, 10, 6]
+
+
+query I
+SELECT clocks_to_move_times([ 180, 180, 178, 179, 170, 165 ]::USMALLINT[], 0);
+----
+[0, 2, 0, 9, 5]
+
+
+query I
+SELECT clocks_to_move_times([ 180, 195, 195 ]::USMALLINT[], 0);
+----
+[0, 0]

@@ -1,0 +1,16 @@
+[package]
+name = "pgn-to-aix"
+version = "0.1.0"
+authors = ["Thomas Daniels <daniels.thomas@pm.me>"]
+edition = "2024"
+license = "GPL-3.0+"
+description = "Generates Aix-compatible Parquet file from Lichess database PGN files"
+
+[dependencies]
+aix-chess-compression = { path = "../aix-chess-compression" }
+duckdb = { version = "1.4", features = ["bundled"] }
+shakmaty = "0.30"
+pgn-reader = "0.29"
+lazy-regex = "3.5"
+clap = { version = "4.5", features = ["derive"] }
+zstd = "0.13"

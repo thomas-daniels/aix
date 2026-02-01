@@ -1,0 +1,96 @@
+# name: test/sql/eval_conversions.test
+# description: test eval conversion functions
+# group: [sql]
+
+
+require aixchess
+
+
+query I
+SELECT eval_to_mate(32767);
+----
+1
+
+
+query I
+SELECT eval_to_mate(32766);
+----
+2
+
+
+query I
+SELECT eval_to_mate(32256);
+----
+512
+
+
+query I
+SELECT eval_to_mate(32255);
+----
+NULL
+
+
+query I
+SELECT eval_to_mate(-32768);
+----
+-1
+
+
+query I
+SELECT eval_to_mate(-32767);
+----
+-2
+
+
+query I
+SELECT eval_to_mate(-32257);
+----
+-512
+
+
+query I
+SELECT eval_to_mate(-32256);
+----
+NULL
+
+
+query I
+SELECT eval_to_centipawns(0);
+----
+0
+
+
+query I
+SELECT eval_to_centipawns(-100);
+----
+-100
+
+
+query I
+SELECT eval_to_centipawns(377);
+----
+377
+
+
+query I
+SELECT eval_to_centipawns(32255);
+----
+32255
+
+
+query I
+SELECT eval_to_centipawns(32256);
+----
+NULL
+
+
+query I
+SELECT eval_to_centipawns(-32256);
+----
+-32256
+
+
+query I
+SELECT eval_to_centipawns(-32257);
+----
+NULL

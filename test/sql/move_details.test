@@ -1,0 +1,72 @@
+# name: test/sql/move_details.test
+# description: test move_details(_at) function
+# group: [sql]
+
+
+require aixchess
+
+
+query I
+SELECT move_details('\x9F-\x84\x1C\x1A\x9D:\xBD\xB3\xB8'::BLOB)[7];
+----
+{'ply': 6, 'role': k, 'from': e1, 'to': g1, 'promotion': '', 'capture': '', 'is_castle': true, 'is_check': false, 'is_checkmate': false, 'is_en_passant': false}
+
+
+query I
+SELECT move_details('\x0C\x1C4$\x05\x1A9*\x06\x151)\x04\x07>-\x0A\x12=\x22\x9A5\xBC5\x15&5>\x03\x11-#\x91#>=#5\x00'::BLOB)[7];
+----
+{'ply': 6, 'role': k, 'from': e1, 'to': g1, 'promotion': '', 'capture': '', 'is_castle': true, 'is_check': false, 'is_checkmate': false, 'is_en_passant': false}
+
+
+query I
+SELECT move_details('<]\x93.\x0DT?\xE2\xEC\xDE\xEFaFR\x973\xDB\x03v'::BLOB)[7];
+----
+{'ply': 6, 'role': k, 'from': e1, 'to': g1, 'promotion': '', 'capture': '', 'is_castle': true, 'is_check': false, 'is_checkmate': false, 'is_en_passant': false}
+
+
+query I
+SELECT TRY(move_details('invalid'::BLOB));
+----
+NULL
+
+
+query I
+SELECT move_details_at('\x9F-\x84\x1C\x1A\x9D:\xBD\xB3\xB8'::BLOB, 6);
+----
+{'ply': 6, 'role': k, 'from': e1, 'to': g1, 'promotion': '', 'capture': '', 'is_castle': true, 'is_check': false, 'is_checkmate': false, 'is_en_passant': false}
+
+
+query I
+SELECT move_details_at('\x0C\x1C4$\x05\x1A9*\x06\x151)\x04\x07>-\x0A\x12=\x22\x9A5\xBC5\x15&5>\x03\x11-#\x91#>=#5\x00'::BLOB, 6);
+----
+{'ply': 6, 'role': k, 'from': e1, 'to': g1, 'promotion': '', 'capture': '', 'is_castle': true, 'is_check': false, 'is_checkmate': false, 'is_en_passant': false}
+
+
+query I
+SELECT move_details_at('<]\x93.\x0DT?\xE2\xEC\xDE\xEFaFR\x973\xDB\x03v'::BLOB, 6);
+----
+{'ply': 6, 'role': k, 'from': e1, 'to': g1, 'promotion': '', 'capture': '', 'is_castle': true, 'is_check': false, 'is_checkmate': false, 'is_en_passant': false}
+
+
+query I
+SELECT TRY(move_details_at('invalid'::BLOB, 6));
+----
+NULL
+
+
+query I
+SELECT move_details_at('\x9F-\x84\x1C\x1A\x9D:\xBD\xB3\xB8'::BLOB, 30);
+----
+NULL
+
+
+query I
+SELECT move_details_at('\x0C\x1C4$\x05\x1A9*\x06\x151)\x04\x07>-\x0A\x12=\x22\x9A5\xBC5\x15&5>\x03\x11-#\x91#>=#5\x00'::BLOB, 30);
+----
+NULL
+
+
+query I
+SELECT move_details_at('<]\x93.\x0DT?\xE2\xEC\xDE\xEFaFR\x973\xDB\x03v'::BLOB, 30);
+----
+NULL

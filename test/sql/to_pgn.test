@@ -1,0 +1,30 @@
+# name: test/sql/to_pgn.test
+# description: test to_pgn function
+# group: [sql]
+
+
+require aixchess
+
+
+query I
+SELECT to_pgn('\x9F-\x84\x1C\x1A\x9D:\xBD\xB3\xB8'::BLOB);
+----
+1. e4 e5 2. Bc4 Nc6 3. Nf3 b6 4. O-O Nf6 5. c3 Bc5 6. Bxf7+ Kxf7 7. Ng5+ Kg8 8. Qb3+ Nd5 9. Qxd5+ Kf8 10. Qf7#
+
+
+query I
+SELECT to_pgn('\x0C\x1C4$\x05\x1A9*\x06\x151)\x04\x07>-\x0A\x12=\x22\x9A5\xBC5\x15&5>\x03\x11-#\x91#>=#5\x00'::BLOB);
+----
+1. e4 e5 2. Bc4 Nc6 3. Nf3 b6 4. O-O Nf6 5. c3 Bc5 6. Bxf7+ Kxf7 7. Ng5+ Kg8 8. Qb3+ Nd5 9. Qxd5+ Kf8 10. Qf7#
+
+
+query I
+SELECT to_pgn('<]\x93.\x0DT?\xE2\xEC\xDE\xEFaFR\x973\xDB\x03v'::BLOB);
+----
+1. e4 e5 2. Bc4 Nc6 3. Nf3 b6 4. O-O Nf6 5. c3 Bc5 6. Bxf7+ Kxf7 7. Ng5+ Kg8 8. Qb3+ Nd5 9. Qxd5+ Kf8 10. Qf7#
+
+
+query I
+SELECT TRY(to_pgn('invalid'::BLOB));
+----
+NULL

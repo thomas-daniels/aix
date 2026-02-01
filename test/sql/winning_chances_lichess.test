@@ -1,0 +1,43 @@
+# name: test/sql/winning_chances_lichess.test
+# description: test winning_chances_lichess function
+# group: [sql]
+
+
+require aixchess
+
+
+query I
+SELECT ROUND(winning_chances_lichess(0), 12);
+----
+0.0
+
+
+query I
+SELECT ROUND(winning_chances_lichess(100), 12);
+----
+0.182051794383
+
+
+query I
+SELECT ROUND(winning_chances_lichess(-100), 12);
+----
+-0.182051794383
+
+
+query I
+SELECT list_bool_and(RANGE(0, 30000).apply(lambda x: ROUND(winning_chances_lichess(x::SMALLINT), 12) = -ROUND(winning_chances_lichess(-x::SMALLINT), 12)));
+----
+true
+
+
+query I
+SELECT ROUND(winning_chances_lichess(32767), 12);
+----
+0.998733687539
+
+
+query I
+SELECT ROUND(winning_chances_lichess(-32768), 12);
+----
+-0.998733687539
+

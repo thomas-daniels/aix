@@ -1,0 +1,121 @@
+# name: test/sql/scoutfish_query.test
+# description: test scoutfish_query function
+# group: [sql]
+
+
+require aixchess
+
+
+query I
+SELECT scoutfish_query('\x0C\x1C4$\x05\x1A9*\x06\x151)\x04\x07>-\x0A\x12=\x22\x9A5\xBC5\x15&5>\x03\x11-#\x91#>=#5\x00'::BLOB, '{ "imbalance": "PNvB" }');
+----
+true
+
+
+query I
+SELECT scoutfish_query('\x0C\x1C4$\x05\x1A9*\x06\x151)\x04\x07>-\x0A\x12=\x22\x9A5\xBC5\x15&5>\x03\x11-#\x91#>=#5\x00'::BLOB, '{ "imbalance": "PBvN" }');
+----
+false
+
+
+query I
+SELECT scoutfish_query('\x0C\x1C4$\x05\x1A9*\x06\x151)\x04\x07>-\x0A\x12=\x22\x9A5\xBC5\x15&5>\x03\x11-#\x91#>=#5\x00'::BLOB, '{ "imbalance": "NvB" }');
+----
+false
+
+
+query I
+SELECT scoutfish_query('\x0C\x1C4$\x05\x1A9*\x06\x151)\x04\x07>-\x0A\x12=\x22\x9A5\xBC5\x15&5>\x03\x11-#\x91#>=#5\x00'::BLOB, '{ "white-move": "O-O" }');
+----
+true
+
+
+query I
+SELECT scoutfish_query('\x0C\x1C4$\x05\x1A9*\x06\x151)\x04\x07>-\x0A\x12=\x22\x9A5\xBC5\x15&5>\x03\x11-#\x91#>=#5\x00'::BLOB, '{ "black-move": "O-O" }');
+----
+false
+
+
+query I
+SELECT scoutfish_query('\x0C\x1C4$\x05\x1A9*\x06\x151)\x04\x07>-\x0A\x12=\x22\x9A5\xBC5\x15&5>\x03\x11-#\x91#>=#5\x00'::BLOB, '{ "moved": "B", "captured": "P" }');
+----
+true
+
+
+query I
+SELECT scoutfish_query('\x0C\x1C4$\x05\x1A9*\x06\x151)\x04\x07>-\x0A\x12=\x22\x9A5\xBC5\x15&5>\x03\x11-#\x91#>=#5\x00'::BLOB, '{ "moved": "QN", "captured": "P" }');
+----
+false
+
+
+query I
+SELECT scoutfish_query('\x0C\x1C4$\x05\x1A9*\x06\x151)\x04\x07>-\x0A\x12=\x22\x9A5\xBC5\x15&5>\x03\x11-#\x91#>=#5\x00'::BLOB, '{ "stm": "white", "moved": "B", "captured": "P" }');
+----
+true
+
+
+query I
+SELECT scoutfish_query('\x0C\x1C4$\x05\x1A9*\x06\x151)\x04\x07>-\x0A\x12=\x22\x9A5\xBC5\x15&5>\x03\x11-#\x91#>=#5\x00'::BLOB, '{ "stm": "black", "moved": "B", "captured": "P" }');
+----
+false
+
+
+query I
+SELECT scoutfish_query('\x0C\x1C4$\x05\x1A9*\x06\x151)\x04\x07>-\x0A\x12=\x22\x9A5\xBC5\x15&5>\x03\x11-#\x91#>=#5\x00'::BLOB, '{ "sub-fen": "2bq3r/p1pp1kpp/1pn2n2/2b1p3/4P3/2P5/PP1P1PPP/RNBQ1RK1", "material": "KQRRBNNPPPPPPPPKQRRBBNNPPPPPPP" }');
+----
+true
+
+
+query I
+SELECT scoutfish_query('\x0C\x1C4$\x05\x1A9*\x06\x151)\x04\x07>-\x0A\x12=\x22\x9A5\xBC5\x15&5>\x03\x11-#\x91#>=#5\x00'::BLOB, '{ "sub-fen": "2bq3r/p1pp1kpp/1pn2n2/2b1p3/4P3/2P5/PP1P1PPP/RNBQ1RK1", "material": "KQRRBNNPPPPPPPKQRRBBNNPPPPPPP" }');
+----
+false
+
+
+query I
+SELECT scoutfish_query('\x0C\x1C4$\x05\x1A9*\x06\x151)\x04\x07>-\x0A\x12=\x22\x9A5\xBC5\x15&5>\x03\x11-#\x91#>=#5\x00'::BLOB, '{ "sequence": [ { "white-move": "O-O" }, { "moved": "B", "captured": "P" } ] }');
+----
+true
+
+
+query I
+SELECT scoutfish_query_plies('\x0C\x1C4$\x05\x1A9*\x06\x151)\x04\x07>-\x0A\x12=\x22\x9A5\xBC5\x15&5>\x03\x11-#\x91#>=#5\x00'::BLOB, '{ "sequence": [ { "white-move": "O-O" }, { "moved": "B", "captured": "P" } ] }');
+----
+[6, 10]
+
+
+query I
+SELECT scoutfish_query('\x0C\x1C4$\x05\x1A9*\x06\x151)\x04\x07>-\x0A\x12=\x22\x9A5\xBC5\x15&5>\x03\x11-#\x91#>=#5\x00'::BLOB, '{ "streak": [ { "white-move": "O-O" }, { "moved": "B", "captured": "P" } ] }');
+----
+false
+
+
+query I
+SELECT scoutfish_query('\x0C\x1C4$\x05\x1A9*\x06\x151)\x04\x07>-\x0A\x12=\x22\x9A5\xBC5\x15&5>\x03\x11-#\x91#>=#5\x00'::BLOB, '{ "streak": [ { "white-move": "O-O" }, { "moved": "N" } ] }');
+----
+true
+
+
+query I
+SELECT scoutfish_query_plies('\x0C\x1C4$\x05\x1A9*\x06\x151)\x04\x07>-\x0A\x12=\x22\x9A5\xBC5\x15&5>\x03\x11-#\x91#>=#5\x00'::BLOB, '{ "streak": [ { "white-move": "O-O" }, { "moved": "N" } ] }');
+----
+[6, 7]
+
+
+query I
+SELECT scoutfish_query('\x0C\x1C4$\x05\x1A9*\x06\x151)\x04\x07>-\x0A\x12=\x22\x9A5\xBC5\x15&5>\x03\x11-#\x91#>=#5\x00'::BLOB, '{ "sequence": [ { "streak": [ { "white-move": "O-O" }, { "moved": "N" } ] }, { "moved": "B", "captured": "P" } ] }');
+----
+true
+
+
+query I
+SELECT scoutfish_query_plies('\x0C\x1C4$\x05\x1A9*\x06\x151)\x04\x07>-\x0A\x12=\x22\x9A5\xBC5\x15&5>\x03\x11-#\x91#>=#5\x00'::BLOB, '{ "sequence": [ { "streak": [ { "white-move": "O-O" }, { "moved": "N" } ] }, { "moved": "B", "captured": "P" } ] }');
+----
+[6, 7, 10]
+
+
+query I
+SELECT scoutfish_query('\x0C\x1C4$\x05\x1A9*\x06\x151)\x04\x07>-\x0A\x12=\x22\x9A5\xBC5\x15&5>\x03\x11-#\x91#>=#5\x00'::BLOB, '{ "sequence": [ { "streak": [ { "white-move": "O-O" }, { "moved": "P" } ] }, { "moved": "B", "captured": "P" } ] }');
+----
+false
+

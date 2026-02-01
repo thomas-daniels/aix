@@ -1,0 +1,90 @@
+# name: test/sql/time_control_lichess.test
+# description: test time_control_lichess function
+# group: [sql]
+
+
+require aixchess
+
+
+query I
+SELECT time_control_lichess(15, 0)
+----
+Ultrabullet
+
+
+query I
+SELECT time_control_lichess(15, 1)
+----
+Bullet
+
+
+query I
+SELECT time_control_lichess(30, 0)
+----
+Bullet
+
+
+query I
+SELECT time_control_lichess(120, 1)
+----
+Bullet
+
+
+query I
+SELECT time_control_lichess(60, 2)
+----
+Bullet
+
+
+query I
+SELECT time_control_lichess(60, 3)
+----
+Blitz
+
+
+query I
+SELECT time_control_lichess(180, 0)
+----
+Blitz
+
+
+query I
+SELECT time_control_lichess(360, 1)
+----
+Blitz
+
+
+query I
+SELECT time_control_lichess(480, 0)
+----
+Rapid
+
+
+query I
+SELECT time_control_lichess(900, 10)
+----
+Rapid
+
+
+query I
+SELECT time_control_lichess(1440, 0)
+----
+Rapid
+
+
+query I
+SELECT time_control_lichess(1500, 0)
+----
+Classical
+
+
+query I
+SELECT time_control_lichess(1800, 0)
+----
+Classical
+
+
+query I
+SELECT time_control_lichess(2700, 45)
+----
+Classical

@@ -1,0 +1,30 @@
+# name: test/sql/to_uci.test
+# description: test to_uci function
+# group: [sql]
+
+
+require aixchess
+
+
+query I
+SELECT to_uci('\x9F-\x84\x1C\x1A\x9D:\xBD\xB3\xB8'::BLOB);
+----
+e2e4 e7e5 f1c4 b8c6 g1f3 b7b6 e1g1 g8f6 c2c3 f8c5 c4f7 e8f7 f3g5 f7g8 d1b3 f6d5 b3d5 g8f8 d5f7
+
+
+query I
+SELECT to_uci('\x0C\x1C4$\x05\x1A9*\x06\x151)\x04\x07>-\x0A\x12=\x22\x9A5\xBC5\x15&5>\x03\x11-#\x91#>=#5\x00'::BLOB);
+----
+e2e4 e7e5 f1c4 b8c6 g1f3 b7b6 e1g1 g8f6 c2c3 f8c5 c4f7 e8f7 f3g5 f7g8 d1b3 f6d5 b3d5 g8f8 d5f7
+
+
+query I
+SELECT to_uci('<]\x93.\x0DT?\xE2\xEC\xDE\xEFaFR\x973\xDB\x03v'::BLOB);
+----
+e2e4 e7e5 f1c4 b8c6 g1f3 b7b6 e1g1 g8f6 c2c3 f8c5 c4f7 e8f7 f3g5 f7g8 d1b3 f6d5 b3d5 g8f8 d5f7
+
+
+query I
+SELECT TRY(to_uci('invalid'::BLOB));
+----
+NULL
