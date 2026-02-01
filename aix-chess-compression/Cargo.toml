@@ -1,7 +1,14 @@
 [package]
 name = "aix-chess-compression"
 version = "0.1.0"
+authors = ["Thomas Daniels <daniels.thomas@pm.me>"]
 edition = "2024"
+license = "GPL-3.0+"
+keywords = ["compression", "decompression", "chess", "huffman"]
+readme = "README.md"
+repository = "https://github.com/thomas-daniels/aix"
+categories = ["compression", "encoding", "algorithms", "games"]
+description = "Binary encoding and decoding for chess games, as used by Aix"
 
 [dependencies]
 chess-huffman = "0.12.1"
