@@ -80,7 +80,7 @@ Returns the moved pieces in order as a list, e.g. `[P, p, B, n, N, p, K, n, P, b
 
 ## piece_counts_at_position
 
-`piece_counts_at_position(movedata BLOB, position INTEGER) -> STRUCT(wQ UTINYINT, wR UTINYINT, wB UTINYINT, wN UTINYINT, wP UTINYINT, bQ UTINYINT, bR UTINYINT, bB UTINYINT, bN UTINYINT, bP UTINYINT)`
+`piece_counts_at_position(movedata BLOB, position INTEGER) -> STRUCT(wK UTINYINT, wQ UTINYINT, wR UTINYINT, wB UTINYINT, wN UTINYINT, wP UTINYINT, bK UTINYINT, bQ UTINYINT, bR UTINYINT, bB UTINYINT, bN UTINYINT, bP UTINYINT)`
 
 Returns the piece counts at a given position. The starting position is 0. Negative integers are accepted, the final position is -1.
 
