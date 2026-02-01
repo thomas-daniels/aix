@@ -43,6 +43,10 @@ Which results in:
 
 The conversion from Lichess PGNs to Aix-compatible files is done using [`pgn-to-aix`](pgn-to-aix/README.md). At the moment, this tool is specifically tailored towards Lichess PGNs.
 
+## aix-chess-compression crate
+
+To directly decode an Aix-encoded game with Rust, use the [aix-chess-compression](https://crates.io/crates/aix-chess-compression) crate.
+
 ## Building the extension yourself
 
 Make sure that CMake, [Ninja](https://ninja-build.org/), [ccache](https://ccache.dev/), and Cargo are installed. Build the extension using:
