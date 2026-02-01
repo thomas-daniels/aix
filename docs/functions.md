@@ -112,6 +112,12 @@ The behavior of Aix does not entirely match that of Scoutfish, and that is by de
 
 There are likely more differences. If Aix's output does not match expectations, please open an issue.
 
+## scoutfish_query_plies
+
+`scoutfish_query_plies(movedata BLOB, query VARCHAR) -> USMALLINT[]`
+
+Like `scoutfish_query`, but returns the list of matching plies. The list is empty if the query does not match any move.
+
 
 ## time_control_lichess
 
