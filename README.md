@@ -4,7 +4,7 @@ Aix enables efficient storage and querying of large chess game collections. Read
 
 Get started by:
 
-* [Installing the `aixchess` extension](https://github.com/thomas-daniels/aix/releases/tag/v0.1.0) for DuckDB.
+* Installing the `aixchess` extension for DuckDB: `INSTALL aixchess FROM community; LOAD aixchess;`.
 * Download one of the [Aix-compatible Lichess database files](https://huggingface.co/datasets/thomasd1/aix-lichess-database).
 
 With the `aixchess` extension loaded, you can execute SQL queries over a chess game collection. For example, this query generates a heatmap of king move destinations:
