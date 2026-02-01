@@ -2,10 +2,7 @@
 # This workflow calls the main distribution pipeline from DuckDB to build, test and (optionally) release the extension
 #
 name: Main Extension Distribution Pipeline
-on:
-  push:
-  pull_request:
-  workflow_dispatch:
+on: workflow_dispatch
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}-${{ github.head_ref || '' }}-${{ github.base_ref || '' }}-${{ github.ref != 'refs/heads/main' && github.sha || '' }}
