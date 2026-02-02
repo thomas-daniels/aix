@@ -548,3 +548,27 @@ impl Decode for CompactIndexDecoder<'_> {
         maybe_next.map(|next| next.map(|_| &self.chess))
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::{CompressionLevel, Decoder, EncodedGame};
+
+    #[test]
+    fn decode_test() {
+        let bytes = b"<]\x93.\x0DT?\xE2\xEC\xDE\xEFaFR\x973\xDB\x03v";
+        let encoded_game = EncodedGame::from_bytes(bytes).unwrap();
+        assert_eq!(encoded_game.compression_level, CompressionLevel::Medium);
+
+        let decoder = Decoder::new(&encoded_game);
+
+        if let Decoder::CompactIndex(..) = &decoder {
+            // expected
+        } else {
+            panic!("Decoder is not CompactIndex variant");
+        }
+
+        let uci = decoder.into_uci_string().unwrap();
+        let expected_uci = "e2e4 e7e5 f1c4 b8c6 g1f3 b7b6 e1g1 g8f6 c2c3 f8c5 c4f7 e8f7 f3g5 f7g8 d1b3 f6d5 b3d5 g8f8 d5f7";
+        assert_eq!(uci, expected_uci);
+    }
+}

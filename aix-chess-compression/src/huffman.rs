@@ -74,3 +74,27 @@ impl Decode for HuffDecoder<'_> {
             .map(|m| m.map_err(|_| DecodeError {}))
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::{CompressionLevel, Decoder, EncodedGame};
+
+    #[test]
+    fn decode_test() {
+        let bytes = b"\x9F-\x84\x1C\x1A\x9D:\xBD\xB3\xB8";
+        let encoded_game = EncodedGame::from_bytes(bytes).unwrap();
+        assert_eq!(encoded_game.compression_level, CompressionLevel::High);
+
+        let decoder = Decoder::new(&encoded_game);
+
+        if let Decoder::Huffman(..) = &decoder {
+            // expected
+        } else {
+            panic!("Decoder is not Huffman variant");
+        }
+
+        let uci = decoder.into_uci_string().unwrap();
+        let expected_uci = "e2e4 e7e5 f1c4 b8c6 g1f3 b7b6 e1g1 g8f6 c2c3 f8c5 c4f7 e8f7 f3g5 f7g8 d1b3 f6d5 b3d5 g8f8 d5f7";
+        assert_eq!(uci, expected_uci);
+    }
+}
