@@ -345,9 +345,13 @@ fn index_nth_set_bit(v: u64, n: u64) -> DecodeResult<u32> {
                 return Ok(i);
             }
             count += 1;
+            v >>= 1;
+            i += 1;
+        } else {
+            let tz = v.trailing_zeros();
+            v >>= tz;
+            i += tz;
         }
-        v >>= 1;
-        i += 1;
     }
     Err(DecodeError {})
 }
@@ -551,7 +555,7 @@ impl Decode for CompactIndexDecoder<'_> {
 
 #[cfg(test)]
 mod tests {
-    use crate::{CompressionLevel, Decoder, EncodedGame};
+    use crate::{CompressionLevel, Decoder, EncodedGame, compactindex::index_nth_set_bit};
 
     #[test]
     fn decode_test() {
@@ -570,5 +574,34 @@ mod tests {
         let uci = decoder.into_uci_string().unwrap();
         let expected_uci = "e2e4 e7e5 f1c4 b8c6 g1f3 b7b6 e1g1 g8f6 c2c3 f8c5 c4f7 e8f7 f3g5 f7g8 d1b3 f6d5 b3d5 g8f8 d5f7";
         assert_eq!(uci, expected_uci);
+    }
+
+    #[test]
+    fn index_nth_set_bit_test() {
+        let v = 0u64;
+        assert!(index_nth_set_bit(v, 0).is_err());
+        assert!(index_nth_set_bit(v, 1).is_err());
+
+        let v = 0b1001u64;
+        assert_eq!(index_nth_set_bit(v, 0).unwrap(), 0);
+        assert_eq!(index_nth_set_bit(v, 1).unwrap(), 3);
+        assert!(index_nth_set_bit(v, 2).is_err());
+
+        let v = 0b1000000000010110u64;
+        assert_eq!(index_nth_set_bit(v, 0).unwrap(), 1);
+        assert_eq!(index_nth_set_bit(v, 1).unwrap(), 2);
+        assert_eq!(index_nth_set_bit(v, 2).unwrap(), 4);
+        assert_eq!(index_nth_set_bit(v, 3).unwrap(), 15);
+        assert!(index_nth_set_bit(v, 4).is_err());
+
+        let v = 1u64 << 63;
+        assert_eq!(index_nth_set_bit(v, 0).unwrap(), 63);
+        assert!(index_nth_set_bit(v, 1).is_err());
+
+        let v = u64::MAX;
+        for i in 0..64 {
+            assert_eq!(index_nth_set_bit(v, i).unwrap(), i as u32);
+        }
+        assert_eq!(index_nth_set_bit(v, 64).is_err(), true);
     }
 }

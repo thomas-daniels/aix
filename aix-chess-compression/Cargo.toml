@@ -18,3 +18,8 @@ bitm = "0.5"
 [dev-dependencies]
 quickcheck = "1"
 quickcheck_macros = "1.1"
+criterion = "0.8"
+
+[[bench]]
+name = "benches"
+harness = false
