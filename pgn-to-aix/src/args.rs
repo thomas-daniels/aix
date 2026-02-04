@@ -30,6 +30,14 @@ pub(super) struct Args {
     /// Optional DuckDB memory limit in GB
     #[arg(long)]
     pub duckdb_memory_limit_gb: Option<u16>,
+
+    /// Parse the input file as Lichess database file. This automatically handles the PGN headers correctly.
+    #[arg(long, default_value_t = false, action = clap::ArgAction::SetTrue)]
+    pub lichess: bool,
+
+    /// Comma-separated list of PGN heaeders to include in the output database. Only relevant when not using --lichess.
+    #[arg(long, value_delimiter = ',')]
+    pub headers: Option<Vec<String>>,
 }
 
 #[derive(clap::ValueEnum, Clone, Debug)]

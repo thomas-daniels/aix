@@ -30,6 +30,30 @@ fn main() {
         std::process::exit(1);
     }
 
+    if args.lichess && args.headers.is_some() {
+        eprintln!("--headers and --lichess are mutually exclusive. Please choose one of them.");
+        std::process::exit(1);
+    }
+
+    if !args.lichess && args.headers.is_none() {
+        eprintln!(
+            "When not using --lichess, you must provide a list of headers to include using --headers."
+        );
+        std::process::exit(1);
+    }
+
+    if !args.lichess && args.headers.as_ref().unwrap().is_empty() {
+        eprintln!("The --headers list cannot be empty.");
+        std::process::exit(1);
+    }
+
+    if let Some(headers) = &args.headers {
+        if headers.iter().any(|h| h.trim().is_empty()) {
+            eprintln!("The --headers list cannot contain empty header names.");
+            std::process::exit(1);
+        }
+    }
+
     let db = Connection::open(output_duckdb).unwrap();
 
     if let Some(mem_limit) = args.duckdb_memory_limit_gb {
@@ -37,8 +61,35 @@ fn main() {
             .unwrap();
     }
 
-    db.execute_batch(include_str!("sql/init-database.sql"))
-        .unwrap();
+    let proc_headers_list = if args.lichess {
+        db.execute_batch(include_str!("sql/init-lichess-database.sql"))
+            .unwrap();
+
+        None
+    } else {
+        let headers_sql = &args
+            .headers
+            .as_ref()
+            .unwrap()
+            .iter()
+            .map(|h| format!("{} VARCHAR", h))
+            .collect::<Vec<_>>()
+            .join(",\n ");
+
+        let init_sql =
+            include_str!("sql/init-other-database.sql").replace("$HEADERS", &headers_sql);
+        db.execute_batch(&init_sql).unwrap();
+
+        Some(
+            args.headers
+                .as_ref()
+                .unwrap()
+                .iter()
+                .map(|s| s.to_lowercase())
+                .collect::<Vec<_>>(),
+        )
+    };
+
     let app = db.appender("games").unwrap();
     let mut proc = pgn::PgnProcessor::new(
         app,
@@ -47,6 +98,7 @@ fn main() {
             args::CompressionLevel::Medium => CompressionLevel::Medium,
             args::CompressionLevel::High => CompressionLevel::High,
         },
+        proc_headers_list,
     );
 
     let file = File::open(input_path).unwrap();
