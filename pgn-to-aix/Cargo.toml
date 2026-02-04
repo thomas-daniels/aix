@@ -1,10 +1,10 @@
 [package]
 name = "pgn-to-aix"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Thomas Daniels <daniels.thomas@pm.me>"]
 edition = "2024"
 license = "GPL-3.0+"
-description = "Generates Aix-compatible Parquet file from Lichess database PGN files"
+description = "Generates Aix-compatible Parquet file from PGN files of chess games"
 keywords = ["compression", "decompression", "chess", "huffman"]
 readme = "README.md"
 repository = "https://github.com/thomas-daniels/aix"
