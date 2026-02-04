@@ -5,7 +5,7 @@ Aix enables efficient storage and querying of large chess game collections. Read
 Get started by:
 
 * Installing the `aixchess` extension for DuckDB: `INSTALL aixchess FROM community; LOAD aixchess;`.
-* Download one of the [Aix-compatible Lichess database files](https://huggingface.co/datasets/thomasd1/aix-lichess-database).
+* Download one of the [Aix-compatible Lichess database files](https://huggingface.co/datasets/thomasd1/aix-lichess-database) or convert your own PGN file using [pgn-to-aix](pgn-to-aix/README.md).
 
 With the `aixchess` extension loaded, you can execute SQL queries over a chess game collection. For example, this query generates a heatmap of king move destinations:
 
@@ -40,8 +40,6 @@ Which results in:
 │ g7          │     23388424 │
 ...
 ```
-
-The conversion from Lichess PGNs to Aix-compatible files is done using [`pgn-to-aix`](pgn-to-aix/README.md). At the moment, this tool is specifically tailored towards Lichess PGNs.
 
 ## aix-chess-compression crate
 
