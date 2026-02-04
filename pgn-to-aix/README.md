@@ -1,3 +1,5 @@
+[![crates.io](https://img.shields.io/crates/v/pgn-to-aix.svg)](https://crates.io/crates/pgn-to-aix)
+
 # pgn-to-aix
 
 Command-line tool to convert a PGN file into a Parquet file that can be used with [Aix](https://github.com/thomas-daniels/aix). Accepts uncompressed PGN files and zstd-compressed PGN files (with .zst extension). `pgn-to-aix` will generate a DuckDB file (`.duckdb`) and, unless disabled, a Parquet file (`.parquet`).
