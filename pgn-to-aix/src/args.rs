@@ -15,6 +15,14 @@ pub(super) struct Args {
     #[arg(short, long, value_enum)]
     pub compression: CompressionLevel,
 
+    /// Parse the input file as Lichess database file. This automatically handles the PGN headers correctly.
+    #[arg(long, default_value_t = false, action = clap::ArgAction::SetTrue)]
+    pub lichess: bool,
+
+    /// Comma-separated list of PGN heaeders to include in the output database. Only relevant when not using --lichess.
+    #[arg(long, value_delimiter = ',')]
+    pub headers: Option<Vec<String>>,
+
     /// Skip exporting to Parquet file
     #[arg(long, default_value_t = false, action = clap::ArgAction::SetTrue)]
     pub skip_parquet_export: bool,
@@ -30,14 +38,6 @@ pub(super) struct Args {
     /// Optional DuckDB memory limit in GB
     #[arg(long)]
     pub duckdb_memory_limit_gb: Option<u16>,
-
-    /// Parse the input file as Lichess database file. This automatically handles the PGN headers correctly.
-    #[arg(long, default_value_t = false, action = clap::ArgAction::SetTrue)]
-    pub lichess: bool,
-
-    /// Comma-separated list of PGN heaeders to include in the output database. Only relevant when not using --lichess.
-    #[arg(long, value_delimiter = ',')]
-    pub headers: Option<Vec<String>>,
 
     /// Set this flag to continue processing even if an invalid move is encountered in a game, rather than exiting with an error. The game with the invalid move will end right before the invalid move.
     #[arg(long, default_value_t = false, action = clap::ArgAction::SetTrue)]

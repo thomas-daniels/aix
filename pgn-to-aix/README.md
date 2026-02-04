@@ -16,6 +16,10 @@ Options:
           Path to the output file(s) (without extension)
   -c, --compression <COMPRESSION>
           Compression level for movedata [possible values: low, medium, high]
+      --lichess
+          Parse the input file as Lichess database file. This automatically handles the PGN headers correctly
+      --headers <HEADERS>
+          Comma-separated list of PGN heaeders to include in the output database. Only relevant when not using --lichess
       --skip-parquet-export
           Skip exporting to Parquet file
       --parquet-compression <PARQUET_COMPRESSION>
@@ -24,10 +28,6 @@ Options:
           Compression level for output Parquet file (only relevant for zstd) [default: 19]
       --duckdb-memory-limit-gb <DUCKDB_MEMORY_LIMIT_GB>
           Optional DuckDB memory limit in GB
-      --lichess
-          Parse the input file as Lichess database file. This automatically handles the PGN headers correctly
-      --headers <HEADERS>
-          Comma-separated list of PGN heaeders to include in the output database. Only relevant when not using --lichess
       --continue-on-invalid-move
           Set this flag to continue processing even if an invalid move is encountered in a game, rather than exiting with an error. The game with the invalid move will end right before the invalid move
   -h, --help

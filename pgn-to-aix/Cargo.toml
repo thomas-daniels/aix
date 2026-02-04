@@ -5,9 +5,13 @@ authors = ["Thomas Daniels <daniels.thomas@pm.me>"]
 edition = "2024"
 license = "GPL-3.0+"
 description = "Generates Aix-compatible Parquet file from Lichess database PGN files"
+keywords = ["compression", "decompression", "chess", "huffman"]
+readme = "README.md"
+repository = "https://github.com/thomas-daniels/aix"
+categories = ["compression", "encoding", "algorithms", "games"]
 
 [dependencies]
-aix-chess-compression = { path = "../aix-chess-compression" }
+aix-chess-compression = "0.1.1"
 duckdb = { version = "1.4", features = ["bundled"] }
 shakmaty = "0.30"
 pgn-reader = "0.29"
