@@ -12,14 +12,16 @@ pub struct PgnProcessor<'a> {
     count: u32,
     level: CompressionLevel,
     header_list: Option<Vec<String>>,
+    continue_on_invalid_move: bool,
 }
 
+#[derive(Debug)]
 pub enum Headers {
     Lichess(LichessHeaders),
     Custom(CustomHeaders),
 }
 
-#[derive(Default)]
+#[derive(Default, Debug)]
 pub struct LichessHeaders {
     white: Option<String>,
     black: Option<String>,
@@ -47,12 +49,14 @@ impl<'a> PgnProcessor<'a> {
         appender: Appender<'a>,
         level: CompressionLevel,
         header_list: Option<Vec<String>>,
+        continue_on_invalid_move: bool,
     ) -> PgnProcessor<'a> {
         PgnProcessor {
             appender,
             count: 0,
             level,
             header_list,
+            continue_on_invalid_move,
         }
     }
 
@@ -154,16 +158,49 @@ impl<'a> Visitor for PgnProcessor<'a> {
         movetext: &mut Self::Movetext,
         san_plus: SanPlus,
     ) -> ControlFlow<Self::Output> {
-        let m = san_plus
+        match san_plus
             .san
             .to_string()
             .parse::<San>()
             .unwrap()
             .to_move(&movetext.pos)
-            .unwrap();
-        movetext.pos.play_unchecked(m);
-        movetext.encoder.encode_move(m).unwrap();
-        movetext.ply += 1;
+        {
+            Ok(m) => {
+                movetext.pos.play_unchecked(m);
+                movetext.encoder.encode_move(m).unwrap();
+                movetext.ply += 1;
+            }
+            Err(_) => {
+                let error_msg = format!(
+                    "Invalid move '{}' at ply {} in game with headers {:?}",
+                    san_plus.san.to_string(),
+                    movetext.ply + 1,
+                    movetext.headers
+                );
+                if self.continue_on_invalid_move {
+                    eprintln!("{error_msg}");
+
+                    let mut swap = GameInProcessing {
+                        headers: Headers::Custom(CustomHeaders::new()),
+                        encoder: Encoder::new(CompressionLevel::Low),
+                        evals: vec![],
+                        clocks_white: vec![],
+                        clocks_black: vec![],
+                        pos: Chess::new(),
+                        ply: 0,
+                    };
+
+                    std::mem::swap(&mut swap, movetext);
+                    self.end_game_inner(swap);
+
+                    return ControlFlow::Break(());
+                } else {
+                    panic!(
+                        "{error_msg}\nCheck the PGN file or if you want to use --continue-on-invalid-move."
+                    );
+                }
+            }
+        }
 
         ControlFlow::Continue(())
     }
@@ -176,70 +213,7 @@ impl<'a> Visitor for PgnProcessor<'a> {
     }
 
     fn end_game(&mut self, movetext: Self::Movetext) -> Self::Output {
-        let clocks_w = movetext.finalize_clocks(true);
-        let clocks_b = movetext.finalize_clocks(false);
-        let evals = movetext.finalize_evals();
-        let moves = movetext.encoder.finish();
-        let bytes = moves.into_bytes();
-
-        match movetext.headers {
-            Headers::Lichess(headers) => self
-                .appender
-                .append_row(params![
-                    headers.lichess_id,
-                    headers.tournament,
-                    bytes,
-                    clocks_w,
-                    clocks_b,
-                    evals,
-                    movetext.ply,
-                    headers.white,
-                    headers.black,
-                    headers.white_rating,
-                    headers.black_rating,
-                    headers.time_control.map(|c| c.0),
-                    headers.time_control.map(|c| c.1),
-                    headers.result,
-                    headers.termination,
-                    headers.white_rating_diff,
-                    headers.black_rating_diff,
-                    headers.eco,
-                    headers.opening,
-                    headers.white_title,
-                    headers.black_title,
-                    headers.utc_date.and_then(|date| {
-                        headers
-                            .utc_time
-                            .map(|time| format!("{} {}", date.replace(".", "-"), time))
-                    }),
-                ])
-                .unwrap(),
-            Headers::Custom(headers) => {
-                let mut params_vec: Vec<Box<dyn duckdb::ToSql>> = vec![];
-                for header in self
-                    .header_list
-                    .as_ref()
-                    .expect("header_list cannot be None for Custom headers")
-                {
-                    params_vec.push(Box::new(headers.get(header)));
-                }
-
-                params_vec.push(Box::new(bytes));
-                params_vec.push(Box::new(clocks_w));
-                params_vec.push(Box::new(clocks_b));
-                params_vec.push(Box::new(evals));
-                params_vec.push(Box::new(movetext.ply));
-
-                self.appender
-                    .append_row(duckdb::appender_params_from_iter(params_vec))
-                    .unwrap();
-            }
-        }
-
-        self.count += 1;
-        if self.count % 10000 == 0 {
-            println!("{} done", self.count);
-        }
+        self.end_game_inner(movetext)
     }
 
     fn tag(
@@ -322,6 +296,78 @@ impl<'a> Visitor for PgnProcessor<'a> {
         }
 
         ControlFlow::Continue(())
+    }
+}
+
+impl<'a> PgnProcessor<'a> {
+    fn end_game_inner(
+        &mut self,
+        movetext: <Self as Visitor>::Movetext,
+    ) -> <Self as Visitor>::Output {
+        let clocks_w = movetext.finalize_clocks(true);
+        let clocks_b = movetext.finalize_clocks(false);
+        let evals = movetext.finalize_evals();
+        let moves = movetext.encoder.finish();
+        let bytes = moves.into_bytes();
+
+        match movetext.headers {
+            Headers::Lichess(headers) => self
+                .appender
+                .append_row(params![
+                    headers.lichess_id,
+                    headers.tournament,
+                    bytes,
+                    clocks_w,
+                    clocks_b,
+                    evals,
+                    movetext.ply,
+                    headers.white,
+                    headers.black,
+                    headers.white_rating,
+                    headers.black_rating,
+                    headers.time_control.map(|c| c.0),
+                    headers.time_control.map(|c| c.1),
+                    headers.result,
+                    headers.termination,
+                    headers.white_rating_diff,
+                    headers.black_rating_diff,
+                    headers.eco,
+                    headers.opening,
+                    headers.white_title,
+                    headers.black_title,
+                    headers.utc_date.and_then(|date| {
+                        headers
+                            .utc_time
+                            .map(|time| format!("{} {}", date.replace(".", "-"), time))
+                    }),
+                ])
+                .unwrap(),
+            Headers::Custom(headers) => {
+                let mut params_vec: Vec<Box<dyn duckdb::ToSql>> = vec![];
+                for header in self
+                    .header_list
+                    .as_ref()
+                    .expect("header_list cannot be None for Custom headers")
+                {
+                    params_vec.push(Box::new(headers.get(header)));
+                }
+
+                params_vec.push(Box::new(bytes));
+                params_vec.push(Box::new(clocks_w));
+                params_vec.push(Box::new(clocks_b));
+                params_vec.push(Box::new(evals));
+                params_vec.push(Box::new(movetext.ply));
+
+                self.appender
+                    .append_row(duckdb::appender_params_from_iter(params_vec))
+                    .unwrap();
+            }
+        }
+
+        self.count += 1;
+        if self.count % 10000 == 0 {
+            println!("{} done", self.count);
+        }
     }
 }
 

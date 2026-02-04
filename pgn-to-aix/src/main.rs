@@ -99,6 +99,7 @@ fn main() {
             args::CompressionLevel::High => CompressionLevel::High,
         },
         proc_headers_list,
+        args.continue_on_invalid_move,
     );
 
     let file = File::open(input_path).unwrap();

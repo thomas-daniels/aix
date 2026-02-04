@@ -38,6 +38,10 @@ pub(super) struct Args {
     /// Comma-separated list of PGN heaeders to include in the output database. Only relevant when not using --lichess.
     #[arg(long, value_delimiter = ',')]
     pub headers: Option<Vec<String>>,
+
+    /// Set this flag to continue processing even if an invalid move is encountered in a game, rather than exiting with an error. The game with the invalid move will end right before the invalid move.
+    #[arg(long, default_value_t = false, action = clap::ArgAction::SetTrue)]
+    pub continue_on_invalid_move: bool,
 }
 
 #[derive(clap::ValueEnum, Clone, Debug)]
