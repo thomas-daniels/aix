@@ -2,6 +2,7 @@
 
 set (CMAKE_CXX_STANDARD 17)
 add_compile_definitions(_HAS_STD_BYTE=0)
+add_compile_definitions(WIN32_LEAN_AND_MEAN)
 
 # Extension from this repo
 duckdb_extension_load(aixchess
