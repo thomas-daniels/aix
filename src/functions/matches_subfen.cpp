@@ -24,23 +24,15 @@ struct MatchesSubfenBindData : public FunctionData {
 	}
 };
 
-static unique_ptr<FunctionData> MatchesSubfenBindFunction(ClientContext &context, ScalarFunction &bound_function,
-                                                          vector<unique_ptr<Expression>> &arguments) {
-	auto &subfen_arg = arguments[1];
-	if (subfen_arg->HasParameter()) {
-		throw ParameterNotResolvedException();
-	}
-	if (!subfen_arg->IsFoldable()) {
-		throw InvalidInputException(*subfen_arg, "subfen must be a constant");
-	}
-	Value options_str = ExpressionExecutor::EvaluateScalar(context, *subfen_arg);
+static unique_ptr<FunctionData> MatchesSubfenBindFunction(BindScalarFunctionInput &input) {
+	Value options_str = input.GetConstant(1, true);
 	auto subfen_string = options_str.GetValue<string>();
 	Subfen subfen;
 	bool is_null = options_str.IsNull();
 	if (!is_null) {
 		auto subfen_result = Subfen::parse(subfen_string);
 		if (subfen_result.is_err()) {
-			throw InvalidInputException(*subfen_arg, "failed to parse subfen");
+			throw InvalidInputException(*input.GetArguments()[1], "failed to parse subfen");
 		}
 		subfen = *std::move(subfen_result).ok();
 	}
@@ -49,7 +41,7 @@ static unique_ptr<FunctionData> MatchesSubfenBindFunction(ClientContext &context
 
 inline void MatchesSubfen(DataChunk &args, ExpressionState &state, Vector &result) {
 	auto &func_expr = state.expr.Cast<BoundFunctionExpression>();
-	auto &info = func_expr.bind_info->Cast<MatchesSubfenBindData>();
+	auto &info = func_expr.BindInfo()->Cast<MatchesSubfenBindData>();
 
 	if (info.is_null) {
 		result.SetVectorType(VectorType::CONSTANT_VECTOR);
@@ -73,6 +65,7 @@ inline void MatchesSubfen(DataChunk &args, ExpressionState &state, Vector &resul
 void Register_MatchesSubfen(ExtensionLoader &loader) {
 	auto matches_subfen_function = ScalarFunction("matches_subfen", {LogicalType::BLOB, LogicalType::VARCHAR},
 	                                              LogicalType::BOOLEAN, MatchesSubfen, MatchesSubfenBindFunction);
+	matches_subfen_function.SetFallible();
 	loader.RegisterFunction(matches_subfen_function);
 }
 

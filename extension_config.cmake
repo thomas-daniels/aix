@@ -1,7 +1,5 @@
 # This file is included by DuckDB's build system. It specifies which extension to load
 
-set (CMAKE_CXX_STANDARD 17)
-
 if (WIN32)
   if (MINGW)
     add_compile_definitions(WIN32_LEAN_AND_MEAN)
@@ -13,7 +11,6 @@ endif()
 # Extension from this repo
 duckdb_extension_load(aixchess
     SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}
-    LOAD_TESTS
 )
 
 # Any extra extensions that should be built

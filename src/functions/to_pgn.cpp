@@ -17,6 +17,7 @@ inline void ToPgn(DataChunk &args, ExpressionState &state, Vector &result) {
 
 void Register_ToPgn(ExtensionLoader &loader) {
 	auto to_pgn_function = ScalarFunction("to_pgn", {LogicalType::BLOB}, LogicalType::VARCHAR, ToPgn);
+	to_pgn_function.SetFallible();
 	loader.RegisterFunction(to_pgn_function);
 }
 

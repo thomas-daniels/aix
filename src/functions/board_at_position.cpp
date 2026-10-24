@@ -16,7 +16,7 @@ struct BoardStruct {
 
 		auto &entries = StructVector::GetEntries(result);
 		for (auto j = 0; j < 64; j++) {
-			auto data = FlatVector::GetData<string_t>(*entries[j]);
+			auto data = FlatVector::GetDataMutable<string_t>(entries[j]);
 
 			auto c = value.board[j];
 			std::string p;
@@ -64,6 +64,7 @@ void Register_BoardAtPosition(ExtensionLoader &loader) {
 	}
 	auto board_pos_function = ScalarFunction("board_at_position", {LogicalType::BLOB, LogicalType::INTEGER},
 	                                         LogicalType::STRUCT(board_children), BoardAtPosition);
+	board_pos_function.SetFallible();
 	loader.RegisterFunction(board_pos_function);
 }
 

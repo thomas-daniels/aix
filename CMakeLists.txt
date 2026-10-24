@@ -32,6 +32,13 @@ add_custom_target(
 )
 
 project(${TARGET_NAME})
+
+set(CMAKE_CXX_STANDARD
+    "17"
+    CACHE STRING "C++ standard to enforce")
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+
 include_directories(src/include)
 
 file(GLOB_RECURSE EXTENSION_SOURCES "src/*.cpp")

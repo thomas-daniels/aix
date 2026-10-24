@@ -38,21 +38,21 @@ struct MoveDetailsStruct {
 
 		auto &entries = StructVector::GetEntries(result);
 
-		FlatVector::GetData<uint16_t>(*entries[PLY_I])[i] = value.inner.ply;
-		FlatVector::GetData<string_t>(*entries[ROLE_I])[i] = std::string(1, value.inner.role);
-		FlatVector::GetData<string_t>(*entries[FROM_I])[i] = SQUARES[value.inner.from];
-		FlatVector::GetData<string_t>(*entries[TO_I])[i] = SQUARES[value.inner.to];
-		FlatVector::GetData<string_t>(*entries[PROMOTION_I])[i] =
+		FlatVector::GetDataMutable<uint16_t>(entries[PLY_I])[i] = value.inner.ply;
+		FlatVector::GetDataMutable<string_t>(entries[ROLE_I])[i] = std::string(1, value.inner.role);
+		FlatVector::GetDataMutable<string_t>(entries[FROM_I])[i] = SQUARES[value.inner.from];
+		FlatVector::GetDataMutable<string_t>(entries[TO_I])[i] = SQUARES[value.inner.to];
+		FlatVector::GetDataMutable<string_t>(entries[PROMOTION_I])[i] =
 		    value.inner.promotion == 0 ? "" : std::string(1, value.inner.promotion);
-		FlatVector::GetData<string_t>(*entries[CAPTURE_I])[i] =
+		FlatVector::GetDataMutable<string_t>(entries[CAPTURE_I])[i] =
 		    value.inner.capture == 0 ? "" : std::string(1, value.inner.capture);
-		FlatVector::GetData<bool>(*entries[IS_CASTLE_I])[i] = value.inner.is_castle;
-		FlatVector::GetData<bool>(*entries[IS_EN_PASSANT_I])[i] = value.inner.is_en_passant;
-		FlatVector::GetData<bool>(*entries[CHECK_I])[i] = value.inner.is_check;
-		FlatVector::GetData<bool>(*entries[CHECKMATE_I])[i] = value.inner.is_checkmate;
+		FlatVector::GetDataMutable<bool>(entries[IS_CASTLE_I])[i] = value.inner.is_castle;
+		FlatVector::GetDataMutable<bool>(entries[IS_EN_PASSANT_I])[i] = value.inner.is_en_passant;
+		FlatVector::GetDataMutable<bool>(entries[CHECK_I])[i] = value.inner.is_check;
+		FlatVector::GetDataMutable<bool>(entries[CHECKMATE_I])[i] = value.inner.is_checkmate;
 		if constexpr (std::is_same_v<INNER_TYPE, MoveDetailsExtended>) {
-			FlatVector::GetData<bool>(*entries[STALEMATE_I])[i] = value.inner.is_stalemate;
-			FlatVector::GetData<uint8_t>(*entries[LEGAL_RESPONSE_MOVE_COUNT_I])[i] =
+			FlatVector::GetDataMutable<bool>(entries[STALEMATE_I])[i] = value.inner.is_stalemate;
+			FlatVector::GetDataMutable<uint8_t>(entries[LEGAL_RESPONSE_MOVE_COUNT_I])[i] =
 			    value.inner.legal_response_move_count;
 		}
 	}
@@ -181,19 +181,23 @@ void Register_MoveDetails(ExtensionLoader &loader) {
 	auto move_details_ext_function =
 	    ScalarFunction("move_details_ext", {LogicalType::BLOB},
 	                   LogicalType::LIST(LogicalType::STRUCT(move_children_ext)), MoveDetailsExtFn);
+	move_details_ext_function.SetFallible();
 	loader.RegisterFunction(move_details_ext_function);
 
 	auto move_details_ext_at_function =
 	    ScalarFunction("move_details_ext_at", {LogicalType::BLOB, LogicalType::SMALLINT},
 	                   LogicalType::STRUCT(move_children_ext), MoveDetailsExtAtFn);
+	move_details_ext_at_function.SetFallible();
 	loader.RegisterFunction(move_details_ext_at_function);
 
 	auto move_details_function = ScalarFunction("move_details", {LogicalType::BLOB},
 	                                            LogicalType::LIST(LogicalType::STRUCT(move_children)), MoveDetailsFn);
+	move_details_function.SetFallible();
 	loader.RegisterFunction(move_details_function);
 
 	auto move_details_at_function = ScalarFunction("move_details_at", {LogicalType::BLOB, LogicalType::SMALLINT},
 	                                               LogicalType::STRUCT(move_children), MoveDetailsAtFn);
+	move_details_at_function.SetFallible();
 	loader.RegisterFunction(move_details_at_function);
 }
 

@@ -39,18 +39,18 @@ struct PiecesAtPositionResult {
 		// be inlined
 
 		auto &entries = StructVector::GetEntries(result);
-		STR::AssignResult(*entries[0], i, value.wk_val);
-		STR_LIST::AssignResult(*entries[1], i, value.wq_val);
-		STR_LIST::AssignResult(*entries[2], i, value.wr_val);
-		STR_LIST::AssignResult(*entries[3], i, value.wb_val);
-		STR_LIST::AssignResult(*entries[4], i, value.wn_val);
-		STR_LIST::AssignResult(*entries[5], i, value.wp_val);
-		STR::AssignResult(*entries[6], i, value.bk_val);
-		STR_LIST::AssignResult(*entries[7], i, value.bq_val);
-		STR_LIST::AssignResult(*entries[8], i, value.br_val);
-		STR_LIST::AssignResult(*entries[9], i, value.bb_val);
-		STR_LIST::AssignResult(*entries[10], i, value.bn_val);
-		STR_LIST::AssignResult(*entries[11], i, value.bp_val);
+		STR::AssignResult(entries[0], i, value.wk_val);
+		STR_LIST::AssignResult(entries[1], i, value.wq_val);
+		STR_LIST::AssignResult(entries[2], i, value.wr_val);
+		STR_LIST::AssignResult(entries[3], i, value.wb_val);
+		STR_LIST::AssignResult(entries[4], i, value.wn_val);
+		STR_LIST::AssignResult(entries[5], i, value.wp_val);
+		STR::AssignResult(entries[6], i, value.bk_val);
+		STR_LIST::AssignResult(entries[7], i, value.bq_val);
+		STR_LIST::AssignResult(entries[8], i, value.br_val);
+		STR_LIST::AssignResult(entries[9], i, value.bb_val);
+		STR_LIST::AssignResult(entries[10], i, value.bn_val);
+		STR_LIST::AssignResult(entries[11], i, value.bp_val);
 	}
 };
 
@@ -127,6 +127,7 @@ void Register_PiecesAtPosition(ExtensionLoader &loader) {
 
 	auto pieces_pos_function = ScalarFunction("pieces_at_position", {LogicalType::BLOB, LogicalType::INTEGER},
 	                                          LogicalType::STRUCT(piece_counts_children), PiecesAtPosition);
+	pieces_pos_function.SetFallible();
 	loader.RegisterFunction(pieces_pos_function);
 }
 

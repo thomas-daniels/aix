@@ -47,16 +47,8 @@ static const char *ScoutfishParseErrorToString(ScoutfishQueryParseError err) {
 	}
 }
 
-static unique_ptr<FunctionData> ScoutfishQueryBindFunction(ClientContext &context, ScalarFunction &bound_function,
-                                                           vector<unique_ptr<Expression>> &arguments) {
-	auto &query_arg = arguments[1];
-	if (query_arg->HasParameter()) {
-		throw ParameterNotResolvedException();
-	}
-	if (!query_arg->IsFoldable()) {
-		throw InvalidInputException(*query_arg, "Scoutfish query must be a constant");
-	}
-	Value options_str = ExpressionExecutor::EvaluateScalar(context, *query_arg);
+static unique_ptr<FunctionData> ScoutfishQueryBindFunction(BindScalarFunctionInput &input) {
+	Value options_str = input.GetConstant(1, true);
 	auto scoutfish_query_string = options_str.GetValue<string>();
 
 	bool is_null = options_str.IsNull();
@@ -67,7 +59,7 @@ static unique_ptr<FunctionData> ScoutfishQueryBindFunction(ClientContext &contex
 		auto res = ScoutfishQuery::parse_into_bytes(scoutfish_query_string, encoded_query_span);
 		if (res.is_err()) {
 			auto err = std::move(res).err().value();
-			throw InvalidInputException(*query_arg, ScoutfishParseErrorToString(err));
+			throw InvalidInputException(*input.GetArguments()[1], ScoutfishParseErrorToString(err));
 		}
 		auto size = std::move(res).ok().value();
 		encoded_query.resize(size);
@@ -81,7 +73,7 @@ static unique_ptr<FunctionData> ScoutfishQueryBindFunction(ClientContext &contex
 template <bool PLIES>
 inline void ScoutfishQuery(DataChunk &args, ExpressionState &state, Vector &result) {
 	auto &func_expr = state.expr.Cast<BoundFunctionExpression>();
-	auto &info = func_expr.bind_info->Cast<ScoutfishQueryBindData>();
+	auto &info = func_expr.BindInfo()->Cast<ScoutfishQueryBindData>();
 
 	if (info.is_null) {
 		result.SetVectorType(VectorType::CONSTANT_VECTOR);
@@ -153,12 +145,12 @@ inline void ScoutfishQuery(DataChunk &args, ExpressionState &state, Vector &resu
 void Register_ScoutfishQuery(ExtensionLoader &loader) {
 	auto scoutfish_query_function =
 	    ScalarFunction("scoutfish_query", {LogicalType::BLOB, LogicalType::VARCHAR}, LogicalType::BOOLEAN,
-	                   ScoutfishQuery<false>, ScoutfishQueryBindFunction);
+		               ScoutfishQuery<false>, ScoutfishQueryBindFunction);
 	loader.RegisterFunction(scoutfish_query_function);
 
 	auto scoutfish_query_plies_function =
 	    ScalarFunction("scoutfish_query_plies", {LogicalType::BLOB, LogicalType::VARCHAR},
-	                   LogicalType::LIST(LogicalType::USMALLINT), ScoutfishQuery<true>, ScoutfishQueryBindFunction);
+		               LogicalType::LIST(LogicalType::USMALLINT), ScoutfishQuery<true>, ScoutfishQueryBindFunction);
 	loader.RegisterFunction(scoutfish_query_plies_function);
 }
 

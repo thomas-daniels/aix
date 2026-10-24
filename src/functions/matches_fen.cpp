@@ -25,23 +25,15 @@ struct MatchesFenBindData : public FunctionData {
 	}
 };
 
-static unique_ptr<FunctionData> MatchesFenBindFunction(ClientContext &context, ScalarFunction &bound_function,
-                                                       vector<unique_ptr<Expression>> &arguments) {
-	auto &fen_arg = arguments[1];
-	if (fen_arg->HasParameter()) {
-		throw ParameterNotResolvedException();
-	}
-	if (!fen_arg->IsFoldable()) {
-		throw InvalidInputException(*fen_arg, "fen must be a constant");
-	}
-	Value options_str = ExpressionExecutor::EvaluateScalar(context, *fen_arg);
+static unique_ptr<FunctionData> MatchesFenBindFunction(BindScalarFunctionInput &input) {
+	Value options_str = input.GetConstant(1, true);
 	auto fen_string = options_str.GetValue<string>();
 	Fen fen;
 	bool is_null = options_str.IsNull();
 	if (!is_null) {
 		auto fen_result = Fen::parse(fen_string);
 		if (fen_result.is_err()) {
-			throw InvalidInputException(*fen_arg, "failed to parse fen");
+			throw InvalidInputException(*input.GetArguments()[1], "failed to parse fen");
 		}
 		fen = *std::move(fen_result).ok();
 	}
@@ -50,7 +42,7 @@ static unique_ptr<FunctionData> MatchesFenBindFunction(ClientContext &context, S
 
 inline void MatchesFen(DataChunk &args, ExpressionState &state, Vector &result) {
 	auto &func_expr = state.expr.Cast<BoundFunctionExpression>();
-	auto &info = func_expr.bind_info->Cast<MatchesFenBindData>();
+	auto &info = func_expr.BindInfo()->Cast<MatchesFenBindData>();
 
 	if (info.is_null) {
 		result.SetVectorType(VectorType::CONSTANT_VECTOR);
@@ -74,6 +66,7 @@ inline void MatchesFen(DataChunk &args, ExpressionState &state, Vector &result) 
 void Register_MatchesFen(ExtensionLoader &loader) {
 	auto matches_fen_function = ScalarFunction("matches_fen", {LogicalType::BLOB, LogicalType::VARCHAR},
 	                                           LogicalType::BOOLEAN, MatchesFen, MatchesFenBindFunction);
+	matches_fen_function.SetFallible();
 	loader.RegisterFunction(matches_fen_function);
 }
 

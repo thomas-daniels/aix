@@ -10,22 +10,12 @@
 
 namespace duckdb {
 
-static DefaultMacro aixchess_macros[] = {{DEFAULT_SCHEMA,
-                                          "list_winning_chances_lichess",
-                                          {"evals", nullptr},
-                                          {{nullptr, nullptr}},
-                                          R"( list_transform(evals, lambda x: winning_chances_lichess(x)) )"},
-                                         {DEFAULT_SCHEMA,
-                                          "list_eval_to_centipawns",
-                                          {"evals", nullptr},
-                                          {{nullptr, nullptr}},
-                                          R"( list_transform(evals, lambda x: eval_to_centipawns(x)) )"},
-                                         {DEFAULT_SCHEMA,
-                                          "list_eval_to_mate",
-                                          {"evals", nullptr},
-                                          {{nullptr, nullptr}},
-                                          R"( list_transform(evals, lambda x: eval_to_mate(x)) )"},
-                                         {nullptr, nullptr, {nullptr}, {{nullptr, nullptr}}, nullptr}};
+static DefaultMacro aixchess_macros[] = {
+    {DEFAULT_SCHEMA, "list_winning_chances_lichess",
+	 "(evals) AS list_transform(evals, lambda x: winning_chances_lichess(x))"},
+    {DEFAULT_SCHEMA, "list_eval_to_centipawns", "(evals) AS list_transform(evals, lambda x: eval_to_centipawns(x))"},
+    {DEFAULT_SCHEMA, "list_eval_to_mate", "(evals) AS list_transform(evals, lambda x: eval_to_mate(x))"},
+    {nullptr, nullptr, nullptr}};
 
 static void LoadInternal(ExtensionLoader &loader) {
 	Register_FenAtPosition(loader);

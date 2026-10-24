@@ -9,26 +9,26 @@ inline void ClocksToMoveTimes(DataChunk &args, ExpressionState &state, Vector &r
 	const auto count = args.size();
 
 	auto &clocks_vector = args.data[0];
-	auto &clocks_child = ListVector::GetEntry(clocks_vector);
+	auto &clocks_child = ListVector::GetChild(clocks_vector);
 	UnifiedVectorFormat clocks_uvf;
-	clocks_vector.ToUnifiedFormat(args.size(), clocks_uvf);
+	clocks_vector.ToUnifiedFormat(clocks_uvf);
 	auto clocks_entries = UnifiedVectorFormat::GetData<list_entry_t>(clocks_uvf);
 
 	const auto clocks_size = ListVector::GetListSize(clocks_vector);
-	clocks_child.Flatten(clocks_size);
+	clocks_child.Flatten();
 	D_ASSERT(clocks_child.GetVectorType() == VectorType::FLAT_VECTOR);
 	auto clocks_data = FlatVector::GetData<uint16_t>(clocks_child);
 
 	auto &clocks_child_validity = FlatVector::Validity(clocks_child);
 
 	UnifiedVectorFormat increments_uvf;
-	args.data[1].ToUnifiedFormat(count, increments_uvf);
+	args.data[1].ToUnifiedFormat(increments_uvf);
 	auto increments_data = UnifiedVectorFormat::GetData<uint8_t>(increments_uvf);
 
 	result.SetVectorType(VectorType::FLAT_VECTOR);
-	auto &results_child = ListVector::GetEntry(result);
-	auto results_entries = FlatVector::GetData<list_entry_t>(result);
-	auto &result_validity = FlatVector::Validity(result);
+	auto &results_child = ListVector::GetChildMutable(result);
+	auto results_entries = FlatVector::GetDataMutable<list_entry_t>(result);
+	auto &result_validity = FlatVector::ValidityMutable(result);
 
 	for (idx_t i = 0; i < count; i++) {
 		auto inc_idx = increments_uvf.sel->get_index(i);
@@ -59,7 +59,7 @@ inline void ClocksToMoveTimes(DataChunk &args, ExpressionState &state, Vector &r
 			}
 
 			ListVector::Reserve(result, result_current_size + clocks_length - 1);
-			auto results_data = FlatVector::GetData<uint16_t>(results_child);
+			auto results_data = FlatVector::GetDataMutable<uint16_t>(results_child);
 			results_entries[i].offset = result_current_size;
 			results_entries[i].length = clocks_length - 1;
 

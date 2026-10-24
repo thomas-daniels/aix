@@ -17,6 +17,7 @@ inline void ToUci(DataChunk &args, ExpressionState &state, Vector &result) {
 
 void Register_ToUci(ExtensionLoader &loader) {
 	auto to_uci_function = ScalarFunction("to_uci", {LogicalType::BLOB}, LogicalType::VARCHAR, ToUci);
+	to_uci_function.SetFallible();
 	loader.RegisterFunction(to_uci_function);
 }
 

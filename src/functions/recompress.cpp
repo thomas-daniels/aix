@@ -26,6 +26,7 @@ inline void Recompress(DataChunk &args, ExpressionState &state, Vector &result) 
 void Register_Recompress(ExtensionLoader &loader) {
 	auto recompress_function =
 	    ScalarFunction("recompress", {LogicalType::BLOB, LogicalType::UTINYINT}, LogicalType::BLOB, Recompress);
+	recompress_function.SetFallible();
 	loader.RegisterFunction(recompress_function);
 }
 
