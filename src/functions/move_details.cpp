@@ -182,7 +182,8 @@ void Register_MoveDetails(ExtensionLoader &loader) {
 	    "move_details_ext", {}, LogicalType::LIST(LogicalType::STRUCT(move_children_ext)), MoveDetailsExtFn);
 	move_details_ext_function.GetSignature().AddParameter("movedata", LogicalType::BLOB);
 	move_details_ext_function.SetFallible();
-	loader.RegisterFunction(move_details_ext_function);
+	RegisterFunc(loader, move_details_ext_function, "Returns a list of extended details of all moves in the game.",
+	             "move_details_ext('\\x9F-\\x84\\x1C\\x1A\\x9D:\\xBD\\xB3\\xB8'::BLOB)");
 
 	auto move_details_ext_at_function =
 	    ScalarFunction("move_details_ext_at", {}, LogicalType::STRUCT(move_children_ext), MoveDetailsExtAtFn);
@@ -190,13 +191,17 @@ void Register_MoveDetails(ExtensionLoader &loader) {
 	    .AddParameter("movedata", LogicalType::BLOB)
 	    .AddParameter("position", LogicalType::SMALLINT);
 	move_details_ext_at_function.SetFallible();
-	loader.RegisterFunction(move_details_ext_at_function);
+	RegisterFunc(loader, move_details_ext_at_function,
+	             "Returns the extended details of a given move in the game. The move is 0-indexed, and negative "
+	             "indices are allowed, though positive indices is typically faster.",
+	             "move_details_ext('\\x9F-\\x84\\x1C\\x1A\\x9D:\\xBD\\xB3\\xB8'::BLOB)");
 
 	auto move_details_function =
 	    ScalarFunction("move_details", {}, LogicalType::LIST(LogicalType::STRUCT(move_children)), MoveDetailsFn);
 	move_details_function.GetSignature().AddParameter("movedata", LogicalType::BLOB);
 	move_details_function.SetFallible();
-	loader.RegisterFunction(move_details_function);
+	RegisterFunc(loader, move_details_function, "Returns a list of details of all moves in the game.",
+	             "move_details('\\x9F-\\x84\\x1C\\x1A\\x9D:\\xBD\\xB3\\xB8'::BLOB)");
 
 	auto move_details_at_function =
 	    ScalarFunction("move_details_at", {}, LogicalType::STRUCT(move_children), MoveDetailsAtFn);
@@ -204,7 +209,10 @@ void Register_MoveDetails(ExtensionLoader &loader) {
 	    .AddParameter("movedata", LogicalType::BLOB)
 	    .AddParameter("position", LogicalType::SMALLINT);
 	move_details_at_function.SetFallible();
-	loader.RegisterFunction(move_details_at_function);
+	RegisterFunc(loader, move_details_at_function,
+	             "Returns the details of a given move in the game. The move is 0-indexed, and negative "
+	             "indices are allowed, though positive indices is typically faster.",
+	             "move_details_ext('\\x9F-\\x84\\x1C\\x1A\\x9D:\\xBD\\xB3\\xB8'::BLOB)");
 }
 
 } // namespace duckdb

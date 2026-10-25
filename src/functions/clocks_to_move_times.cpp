@@ -88,7 +88,9 @@ void Register_ClocksToMoveTimes(ExtensionLoader &loader) {
 	clocks_to_move_times_function.GetSignature()
 	    .AddParameter("clocks", LogicalType::LIST(LogicalType::USMALLINT))
 	    .AddParameter("increment", LogicalType::UTINYINT);
-	loader.RegisterFunction(clocks_to_move_times_function);
+	RegisterFunc(loader, clocks_to_move_times_function,
+	             "Transform clocks (of one player) into move times, given the clock times and increment.",
+	             "clocks_to_move_times([ 180, 175, 175, 150 ]::usmallint[], 1)");
 
 	auto clocks_to_move_times_check_nulls_function = ScalarFunction(
 	    "clocks_to_move_times__check_nulls", {}, LogicalType::LIST(LogicalType::USMALLINT), ClocksToMoveTimes<true>);
@@ -96,7 +98,10 @@ void Register_ClocksToMoveTimes(ExtensionLoader &loader) {
 	    .AddParameter("clocks", LogicalType::LIST(LogicalType::USMALLINT))
 	    .AddParameter("increment", LogicalType::UTINYINT);
 	clocks_to_move_times_check_nulls_function.SetFallible();
-	loader.RegisterFunction(clocks_to_move_times_check_nulls_function);
+	RegisterFunc(loader, clocks_to_move_times_check_nulls_function,
+	             "Transform clocks (of one player) into move times, given the clock times and increment. Errors if "
+	             "one of the list elements is NULL.",
+	             "clocks_to_move_times__check_nulls([ 180, 175, 175, 150 ]::usmallint[], 1)");
 }
 
 } // namespace duckdb

@@ -25,7 +25,10 @@ void Register_LichessTimeControl(ExtensionLoader &loader) {
 	lichess_time_control_function.GetSignature()
 	    .AddParameter("initial_seconds", LogicalType::USMALLINT)
 	    .AddParameter("increment", LogicalType::UTINYINT);
-	loader.RegisterFunction(lichess_time_control_function);
+	RegisterFunc(loader, lichess_time_control_function,
+	             "Returns the time control name as on Lichess given the initial time and increment, both in "
+	             "seconds. Possible return values: Ultrabullet, Bullet, Blitz, Rapid, Classical.",
+	             "time_control_lichess(180, 2)");
 }
 
 } // namespace duckdb

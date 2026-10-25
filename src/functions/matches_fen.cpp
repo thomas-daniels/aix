@@ -70,7 +70,12 @@ void Register_MatchesFen(ExtensionLoader &loader) {
 	    .AddParameter("movedata", LogicalType::BLOB)
 	    .AddParameter("fen", LogicalType::VARCHAR);
 	matches_fen_function.SetFallible();
-	loader.RegisterFunction(matches_fen_function);
+	RegisterFunc(
+	    loader, matches_fen_function,
+	    "Returns true if any position in the game exactly matches a given the piece placement, castling rights, side "
+	    "to move, and en passant square of a given FEN. The move counters are ignored. Requires an exact board match.",
+	    "matches_fen('\\x9F-\\x84\\x1C\\x1A\\x9D:\\xBD\\xB3\\xB8'::BLOB, "
+		"'r1bqkbnr/p1pp1ppp/1pn5/4p3/2B1P3/5N2/PPPP1PPP/RNBQ1RK1 b kq -')");
 }
 
 } // namespace duckdb

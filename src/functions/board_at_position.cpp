@@ -68,7 +68,11 @@ void Register_BoardAtPosition(ExtensionLoader &loader) {
 	    .AddParameter("movedata", LogicalType::BLOB)
 	    .AddParameter("positon", LogicalType::INTEGER);
 	board_pos_function.SetFallible();
-	loader.RegisterFunction(board_pos_function);
+	RegisterFunc(
+	    loader, board_pos_function,
+	    "Returns the board at a given position as a struct. The starting position is 0, so the final position is "
+	    "ply_count. Negative integers are accepted, but positive integers is typically faster.",
+	    "fen_at_position('\\x9F-\\x84\\x1C\\x1A\\x9D:\\xBD\\xB3\\xB8'::BLOB, 6)");
 }
 
 } // namespace duckdb

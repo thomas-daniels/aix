@@ -29,7 +29,9 @@ void Register_Recompress(ExtensionLoader &loader) {
 	    .AddParameter("movedata", LogicalType::BLOB)
 	    .AddParameter("level", LogicalType::UTINYINT);
 	recompress_function.SetFallible();
-	loader.RegisterFunction(recompress_function);
+	RegisterFunc(loader, recompress_function,
+	             "Recompress a game at a given compression level. Low is 0, medium is 1, high is 2.",
+	             "recompress('\\x9F-\\x84\\x1C\\x1A\\x9D:\\xBD\\xB3\\xB8'::BLOB, 1)");
 }
 
 } // namespace duckdb

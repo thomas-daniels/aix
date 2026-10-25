@@ -3,6 +3,7 @@
 #include "duckdb.hpp"
 #include "duckdb/common/vector_operations/generic_executor.hpp"
 #include "duckdb/planner/expression/bound_function_expression.hpp"
+#include "duckdb/parser/parsed_data/create_scalar_function_info.hpp"
 
 #include "rust/Game.hpp"
 #include "rust/Bitboards.hpp"
@@ -67,6 +68,15 @@ std::optional<T> UnwrapOptionalDecoded(diplomat::result<T, DecodeError> &&result
 		const auto code_s = std::to_string(code);
 		throw InvalidInputException(fn_name + " - failed to decode movedata (error code " + code_s + ")");
 	}
+}
+
+inline void RegisterFunc(ExtensionLoader &loader, ScalarFunction fn, std::string description, std::string example) {
+	CreateScalarFunctionInfo info(fn);
+	FunctionDescription desc;
+	desc.description = description;
+	desc.examples = {example};
+	info.descriptions.push_back(desc);
+	loader.RegisterFunction(std::move(info));
 }
 
 } // namespace duckdb

@@ -38,12 +38,15 @@ void Register_MovedPieces(ExtensionLoader &loader) {
 	    ScalarFunction("moved_pieces_list", {}, LogicalType::LIST(LogicalType::VARCHAR), MovedPiecesList);
 	moved_pieces_list_function.GetSignature().AddParameter("movedata", LogicalType::BLOB);
 	moved_pieces_list_function.SetFallible();
-	loader.RegisterFunction(moved_pieces_list_function);
+	RegisterFunc(loader, moved_pieces_list_function,
+	             "Returns the moved pieces in order as a list, e.g. [P, p, B, n, N, ...]",
+	             "moved_pieces_list('\\x9F-\\x84\\x1C\\x1A\\x9D:\\xBD\\xB3\\xB8'::BLOB)");
 
 	auto moved_pieces_function = ScalarFunction("moved_pieces", {}, LogicalType::VARCHAR, MovedPieces);
 	moved_pieces_function.GetSignature().AddParameter("movedata", LogicalType::BLOB);
 	moved_pieces_function.SetFallible();
-	loader.RegisterFunction(moved_pieces_function);
+	RegisterFunc(loader, moved_pieces_function, "Returns the moved pieces in order as a string, e.g. PpBnN...",
+	             "moved_pieces('\\x9F-\\x84\\x1C\\x1A\\x9D:\\xBD\\xB3\\xB8'::BLOB)");
 }
 
 } // namespace duckdb

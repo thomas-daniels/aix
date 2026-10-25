@@ -38,11 +38,16 @@ void Register_EvalConversions(ExtensionLoader &loader) {
 	auto eval_to_centipawns_function =
 	    ScalarFunction("eval_to_centipawns", {}, LogicalType::SMALLINT, EvalToCentipawns);
 	eval_to_centipawns_function.GetSignature().AddParameter("eval", LogicalType::SMALLINT);
-	loader.RegisterFunction(eval_to_centipawns_function);
+	RegisterFunc(loader, eval_to_centipawns_function,
+	             "Convert representation of engine eval to centipawns, or NULL if it represents mate.",
+	             "eval_to_centipawns(100)");
 
 	auto eval_to_mate_function = ScalarFunction("eval_to_mate", {}, LogicalType::SMALLINT, EvalToMate);
 	eval_to_mate_function.GetSignature().AddParameter("eval", LogicalType::SMALLINT);
-	loader.RegisterFunction(eval_to_mate_function);
+	RegisterFunc(
+	    loader, eval_to_mate_function,
+	    "Convert representation of engine eval to mate-in-N, or NULL if it represents a (dis)advantage in centipawns.",
+	    "eval_to_mate(-32768)");
 }
 
 } // namespace duckdb

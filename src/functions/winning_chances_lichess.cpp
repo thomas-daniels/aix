@@ -37,7 +37,10 @@ void Register_LichessWinningChances(ExtensionLoader &loader) {
 	auto lichess_winning_chances_function =
 	    ScalarFunction("winning_chances_lichess", {}, LogicalType::DOUBLE, LichessWinningChances);
 	lichess_winning_chances_function.GetSignature().AddParameter("eval", LogicalType::SMALLINT);
-	loader.RegisterFunction(lichess_winning_chances_function);
+	RegisterFunc(loader, lichess_winning_chances_function,
+	             "Converts a position evaluation into winning chances (as per Lichess's formula). Equal position "
+	             "is 0, white completely winning is 1, black completely winning is -1.",
+	             "winning_chances_lichess(100)");
 }
 
 } // namespace duckdb

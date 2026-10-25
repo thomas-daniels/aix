@@ -19,7 +19,8 @@ void Register_ToUci(ExtensionLoader &loader) {
 	auto to_uci_function = ScalarFunction("to_uci", {}, LogicalType::VARCHAR, ToUci);
 	to_uci_function.GetSignature().AddParameter("movedata", LogicalType::BLOB);
 	to_uci_function.SetFallible();
-	loader.RegisterFunction(to_uci_function);
+	RegisterFunc(loader, to_uci_function, "Represents the game as a UCI string, e.g. e2e4 e7e5 f1c4 b8c6 g1f3 ...",
+	             "to_uci('\\x9F-\\x84\\x1C\\x1A\\x9D:\\xBD\\xB3\\xB8'::BLOB)");
 }
 
 } // namespace duckdb

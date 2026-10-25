@@ -69,7 +69,11 @@ void Register_MatchesSubfen(ExtensionLoader &loader) {
 	    .AddParameter("movedata", LogicalType::BLOB)
 	    .AddParameter("fen", LogicalType::VARCHAR);
 	matches_subfen_function.SetFallible();
-	loader.RegisterFunction(matches_subfen_function);
+	RegisterFunc(loader, matches_subfen_function,
+	             "Returns true if any position in the game matches a given sub-FEN. A sub-FEN consists of only the "
+	             "piece placement part of a FEN and matches if a position contains at least those pieces.",
+	             "matches_subfen('\\x9F-\\x84\\x1C\\x1A\\x9D:\\xBD\\xB3\\xB8'::BLOB, "
+	             "'r1bq2kr/p1pp2pp/1pn2n2/2b1p1N1/4P3/1QP5/PP1P1PPP/RNB2RK1')");
 }
 
 } // namespace duckdb

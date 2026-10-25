@@ -149,7 +149,8 @@ void Register_ScoutfishQuery(ExtensionLoader &loader) {
 	    .AddParameter("movedata", LogicalType::BLOB)
 	    .AddParameter("query", LogicalType::VARCHAR);
 	scoutfish_query_function.SetFallible();
-	loader.RegisterFunction(scoutfish_query_function);
+	RegisterFunc(loader, scoutfish_query_function, "Returns true if a game matches a Scoutfish query.",
+	             "scoutfish_query('\\x9F-\\x84\\x1C\\x1A\\x9D:\\xBD\\xB3\\xB8'::BLOB, '{ \"imbalance\": \"PNvB\" }')");
 
 	auto scoutfish_query_plies_function =
 	    ScalarFunction("scoutfish_query_plies", {}, LogicalType::LIST(LogicalType::USMALLINT), ScoutfishQuery<true>,
@@ -158,7 +159,11 @@ void Register_ScoutfishQuery(ExtensionLoader &loader) {
 	    .AddParameter("movedata", LogicalType::BLOB)
 	    .AddParameter("query", LogicalType::VARCHAR);
 	scoutfish_query_plies_function.SetFallible();
-	loader.RegisterFunction(scoutfish_query_plies_function);
+	RegisterFunc(
+	    loader, scoutfish_query_plies_function,
+	    "Returns the list of matching plies to a Scoutfish query. The list is empty if the query does not match any "
+	    "move.",
+	    "scoutfish_query_plies('\\x9F-\\x84\\x1C\\x1A\\x9D:\\xBD\\xB3\\xB8'::BLOB, '{ \"imbalance\": \"PNvB\" }')");
 }
 
 } // namespace duckdb
