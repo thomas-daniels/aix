@@ -65,9 +65,11 @@ void Register_PieceCountsAtPosition(ExtensionLoader &loader) {
 	piece_counts_children.push_back(std::make_pair("bN", LogicalType::UTINYINT));
 	piece_counts_children.push_back(std::make_pair("bP", LogicalType::UTINYINT));
 
-	auto piece_counts_pos_function =
-	    ScalarFunction("piece_counts_at_position", {LogicalType::BLOB, LogicalType::INTEGER},
-	                   LogicalType::STRUCT(piece_counts_children), PieceCountsAtPosition);
+	auto piece_counts_pos_function = ScalarFunction("piece_counts_at_position", {},
+	                                                LogicalType::STRUCT(piece_counts_children), PieceCountsAtPosition);
+	piece_counts_pos_function.GetSignature()
+	    .AddParameter("movedata", LogicalType::BLOB)
+	    .AddParameter("position", LogicalType::INTEGER);
 	piece_counts_pos_function.SetFallible();
 	loader.RegisterFunction(piece_counts_pos_function);
 }

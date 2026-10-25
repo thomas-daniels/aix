@@ -62,8 +62,11 @@ void Register_BoardAtPosition(ExtensionLoader &loader) {
 	for (auto sq : squares) {
 		board_children.push_back(std::make_pair(sq, LogicalType::VARCHAR));
 	}
-	auto board_pos_function = ScalarFunction("board_at_position", {LogicalType::BLOB, LogicalType::INTEGER},
-	                                         LogicalType::STRUCT(board_children), BoardAtPosition);
+	auto board_pos_function =
+	    ScalarFunction("board_at_position", {}, LogicalType::STRUCT(board_children), BoardAtPosition);
+	board_pos_function.GetSignature()
+	    .AddParameter("movedata", LogicalType::BLOB)
+	    .AddParameter("positon", LogicalType::INTEGER);
 	board_pos_function.SetFallible();
 	loader.RegisterFunction(board_pos_function);
 }

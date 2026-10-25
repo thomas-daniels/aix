@@ -24,8 +24,10 @@ inline void Recompress(DataChunk &args, ExpressionState &state, Vector &result) 
 } // namespace
 
 void Register_Recompress(ExtensionLoader &loader) {
-	auto recompress_function =
-	    ScalarFunction("recompress", {LogicalType::BLOB, LogicalType::UTINYINT}, LogicalType::BLOB, Recompress);
+	auto recompress_function = ScalarFunction("recompress", {}, LogicalType::BLOB, Recompress);
+	recompress_function.GetSignature()
+	    .AddParameter("movedata", LogicalType::BLOB)
+	    .AddParameter("level", LogicalType::UTINYINT);
 	recompress_function.SetFallible();
 	loader.RegisterFunction(recompress_function);
 }

@@ -178,25 +178,31 @@ void Register_MoveDetails(ExtensionLoader &loader) {
 	move_children.push_back(std::make_pair("is_check", LogicalType::BOOLEAN));
 	move_children.push_back(std::make_pair("is_checkmate", LogicalType::BOOLEAN));
 
-	auto move_details_ext_function =
-	    ScalarFunction("move_details_ext", {LogicalType::BLOB},
-	                   LogicalType::LIST(LogicalType::STRUCT(move_children_ext)), MoveDetailsExtFn);
+	auto move_details_ext_function = ScalarFunction(
+	    "move_details_ext", {}, LogicalType::LIST(LogicalType::STRUCT(move_children_ext)), MoveDetailsExtFn);
+	move_details_ext_function.GetSignature().AddParameter("movedata", LogicalType::BLOB);
 	move_details_ext_function.SetFallible();
 	loader.RegisterFunction(move_details_ext_function);
 
 	auto move_details_ext_at_function =
-	    ScalarFunction("move_details_ext_at", {LogicalType::BLOB, LogicalType::SMALLINT},
-	                   LogicalType::STRUCT(move_children_ext), MoveDetailsExtAtFn);
+	    ScalarFunction("move_details_ext_at", {}, LogicalType::STRUCT(move_children_ext), MoveDetailsExtAtFn);
+	move_details_ext_at_function.GetSignature()
+	    .AddParameter("movedata", LogicalType::BLOB)
+	    .AddParameter("position", LogicalType::SMALLINT);
 	move_details_ext_at_function.SetFallible();
 	loader.RegisterFunction(move_details_ext_at_function);
 
-	auto move_details_function = ScalarFunction("move_details", {LogicalType::BLOB},
-	                                            LogicalType::LIST(LogicalType::STRUCT(move_children)), MoveDetailsFn);
+	auto move_details_function =
+	    ScalarFunction("move_details", {}, LogicalType::LIST(LogicalType::STRUCT(move_children)), MoveDetailsFn);
+	move_details_function.GetSignature().AddParameter("movedata", LogicalType::BLOB);
 	move_details_function.SetFallible();
 	loader.RegisterFunction(move_details_function);
 
-	auto move_details_at_function = ScalarFunction("move_details_at", {LogicalType::BLOB, LogicalType::SMALLINT},
-	                                               LogicalType::STRUCT(move_children), MoveDetailsAtFn);
+	auto move_details_at_function =
+	    ScalarFunction("move_details_at", {}, LogicalType::STRUCT(move_children), MoveDetailsAtFn);
+	move_details_at_function.GetSignature()
+	    .AddParameter("movedata", LogicalType::BLOB)
+	    .AddParameter("position", LogicalType::SMALLINT);
 	move_details_at_function.SetFallible();
 	loader.RegisterFunction(move_details_at_function);
 }

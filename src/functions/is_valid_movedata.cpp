@@ -14,7 +14,8 @@ inline void IsValidMovedata(DataChunk &args, ExpressionState &state, Vector &res
 } // namespace
 
 void Register_IsValidMovedata(ExtensionLoader &loader) {
-	auto is_valid_movedata_function = ScalarFunction("is_valid_movedata", {LogicalType::BLOB}, LogicalType::BOOLEAN, IsValidMovedata);
+	auto is_valid_movedata_function = ScalarFunction("is_valid_movedata", {}, LogicalType::BOOLEAN, IsValidMovedata);
+	is_valid_movedata_function.GetSignature().AddParameter("movedata", LogicalType::BLOB);
 	loader.RegisterFunction(is_valid_movedata_function);
 }
 

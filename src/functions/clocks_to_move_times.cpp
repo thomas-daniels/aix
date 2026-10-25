@@ -84,13 +84,18 @@ inline void ClocksToMoveTimes(DataChunk &args, ExpressionState &state, Vector &r
 
 void Register_ClocksToMoveTimes(ExtensionLoader &loader) {
 	auto clocks_to_move_times_function =
-	    ScalarFunction("clocks_to_move_times", {LogicalType::LIST(LogicalType::USMALLINT), LogicalType::UTINYINT},
-	                   LogicalType::LIST(LogicalType::USMALLINT), ClocksToMoveTimes<false>);
+	    ScalarFunction("clocks_to_move_times", {}, LogicalType::LIST(LogicalType::USMALLINT), ClocksToMoveTimes<false>);
+	clocks_to_move_times_function.GetSignature()
+	    .AddParameter("clocks", LogicalType::LIST(LogicalType::USMALLINT))
+	    .AddParameter("increment", LogicalType::UTINYINT);
 	loader.RegisterFunction(clocks_to_move_times_function);
 
 	auto clocks_to_move_times_check_nulls_function = ScalarFunction(
-	    "clocks_to_move_times__check_nulls", {LogicalType::LIST(LogicalType::USMALLINT), LogicalType::UTINYINT},
-	    LogicalType::LIST(LogicalType::USMALLINT), ClocksToMoveTimes<true>);
+	    "clocks_to_move_times__check_nulls", {}, LogicalType::LIST(LogicalType::USMALLINT), ClocksToMoveTimes<true>);
+	clocks_to_move_times_check_nulls_function.GetSignature()
+	    .AddParameter("clocks", LogicalType::LIST(LogicalType::USMALLINT))
+	    .AddParameter("increment", LogicalType::UTINYINT);
+	clocks_to_move_times_check_nulls_function.SetFallible();
 	loader.RegisterFunction(clocks_to_move_times_check_nulls_function);
 }
 

@@ -36,11 +36,12 @@ inline void EvalToMate(DataChunk &args, ExpressionState &state, Vector &result) 
 
 void Register_EvalConversions(ExtensionLoader &loader) {
 	auto eval_to_centipawns_function =
-	    ScalarFunction("eval_to_centipawns", {LogicalType::SMALLINT}, LogicalType::SMALLINT, EvalToCentipawns);
+	    ScalarFunction("eval_to_centipawns", {}, LogicalType::SMALLINT, EvalToCentipawns);
+	eval_to_centipawns_function.GetSignature().AddParameter("eval", LogicalType::SMALLINT);
 	loader.RegisterFunction(eval_to_centipawns_function);
 
-	auto eval_to_mate_function =
-	    ScalarFunction("eval_to_mate", {LogicalType::SMALLINT}, LogicalType::SMALLINT, EvalToMate);
+	auto eval_to_mate_function = ScalarFunction("eval_to_mate", {}, LogicalType::SMALLINT, EvalToMate);
+	eval_to_mate_function.GetSignature().AddParameter("eval", LogicalType::SMALLINT);
 	loader.RegisterFunction(eval_to_mate_function);
 }
 

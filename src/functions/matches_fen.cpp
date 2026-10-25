@@ -64,8 +64,11 @@ inline void MatchesFen(DataChunk &args, ExpressionState &state, Vector &result) 
 } // namespace
 
 void Register_MatchesFen(ExtensionLoader &loader) {
-	auto matches_fen_function = ScalarFunction("matches_fen", {LogicalType::BLOB, LogicalType::VARCHAR},
-	                                           LogicalType::BOOLEAN, MatchesFen, MatchesFenBindFunction);
+	auto matches_fen_function =
+	    ScalarFunction("matches_fen", {}, LogicalType::BOOLEAN, MatchesFen, MatchesFenBindFunction);
+	matches_fen_function.GetSignature()
+	    .AddParameter("movedata", LogicalType::BLOB)
+	    .AddParameter("fen", LogicalType::VARCHAR);
 	matches_fen_function.SetFallible();
 	loader.RegisterFunction(matches_fen_function);
 }

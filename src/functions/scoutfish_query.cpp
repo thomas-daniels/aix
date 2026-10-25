@@ -144,13 +144,20 @@ inline void ScoutfishQuery(DataChunk &args, ExpressionState &state, Vector &resu
 
 void Register_ScoutfishQuery(ExtensionLoader &loader) {
 	auto scoutfish_query_function =
-	    ScalarFunction("scoutfish_query", {LogicalType::BLOB, LogicalType::VARCHAR}, LogicalType::BOOLEAN,
-		               ScoutfishQuery<false>, ScoutfishQueryBindFunction);
+	    ScalarFunction("scoutfish_query", {}, LogicalType::BOOLEAN, ScoutfishQuery<false>, ScoutfishQueryBindFunction);
+	scoutfish_query_function.GetSignature()
+	    .AddParameter("movedata", LogicalType::BLOB)
+	    .AddParameter("query", LogicalType::VARCHAR);
+	scoutfish_query_function.SetFallible();
 	loader.RegisterFunction(scoutfish_query_function);
 
 	auto scoutfish_query_plies_function =
-	    ScalarFunction("scoutfish_query_plies", {LogicalType::BLOB, LogicalType::VARCHAR},
-		               LogicalType::LIST(LogicalType::USMALLINT), ScoutfishQuery<true>, ScoutfishQueryBindFunction);
+	    ScalarFunction("scoutfish_query_plies", {}, LogicalType::LIST(LogicalType::USMALLINT), ScoutfishQuery<true>,
+		               ScoutfishQueryBindFunction);
+	scoutfish_query_plies_function.GetSignature()
+	    .AddParameter("movedata", LogicalType::BLOB)
+	    .AddParameter("query", LogicalType::VARCHAR);
+	scoutfish_query_plies_function.SetFallible();
 	loader.RegisterFunction(scoutfish_query_plies_function);
 }
 

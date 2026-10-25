@@ -35,7 +35,8 @@ inline void LichessWinningChances(DataChunk &args, ExpressionState &state, Vecto
 
 void Register_LichessWinningChances(ExtensionLoader &loader) {
 	auto lichess_winning_chances_function =
-	    ScalarFunction("winning_chances_lichess", {LogicalType::SMALLINT}, LogicalType::DOUBLE, LichessWinningChances);
+	    ScalarFunction("winning_chances_lichess", {}, LogicalType::DOUBLE, LichessWinningChances);
+	lichess_winning_chances_function.GetSignature().AddParameter("eval", LogicalType::SMALLINT);
 	loader.RegisterFunction(lichess_winning_chances_function);
 }
 

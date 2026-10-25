@@ -63,8 +63,11 @@ inline void MatchesSubfen(DataChunk &args, ExpressionState &state, Vector &resul
 } // namespace
 
 void Register_MatchesSubfen(ExtensionLoader &loader) {
-	auto matches_subfen_function = ScalarFunction("matches_subfen", {LogicalType::BLOB, LogicalType::VARCHAR},
-	                                              LogicalType::BOOLEAN, MatchesSubfen, MatchesSubfenBindFunction);
+	auto matches_subfen_function =
+	    ScalarFunction("matches_subfen", {}, LogicalType::BOOLEAN, MatchesSubfen, MatchesSubfenBindFunction);
+	matches_subfen_function.GetSignature()
+	    .AddParameter("movedata", LogicalType::BLOB)
+	    .AddParameter("fen", LogicalType::VARCHAR);
 	matches_subfen_function.SetFallible();
 	loader.RegisterFunction(matches_subfen_function);
 }

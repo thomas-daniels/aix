@@ -16,7 +16,8 @@ inline void ToPgn(DataChunk &args, ExpressionState &state, Vector &result) {
 } // namespace
 
 void Register_ToPgn(ExtensionLoader &loader) {
-	auto to_pgn_function = ScalarFunction("to_pgn", {LogicalType::BLOB}, LogicalType::VARCHAR, ToPgn);
+	auto to_pgn_function = ScalarFunction("to_pgn", {}, LogicalType::VARCHAR, ToPgn);
+	to_pgn_function.GetSignature().AddParameter("movedata", LogicalType::BLOB);
 	to_pgn_function.SetFallible();
 	loader.RegisterFunction(to_pgn_function);
 }

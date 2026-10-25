@@ -22,8 +22,10 @@ inline void FenAtPosition(DataChunk &args, ExpressionState &state, Vector &resul
 } // namespace
 
 void Register_FenAtPosition(ExtensionLoader &loader) {
-	auto fen_pos_function = ScalarFunction("fen_at_position", {LogicalType::BLOB, LogicalType::INTEGER},
-	                                       LogicalType::VARCHAR, FenAtPosition);
+	auto fen_pos_function = ScalarFunction("fen_at_position", {}, LogicalType::VARCHAR, FenAtPosition);
+	fen_pos_function.GetSignature()
+	    .AddParameter("movedata", LogicalType::BLOB)
+	    .AddParameter("position", LogicalType::INTEGER);
 	fen_pos_function.SetFallible();
 	loader.RegisterFunction(fen_pos_function);
 }

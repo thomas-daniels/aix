@@ -34,12 +34,14 @@ inline void MovedPieces(DataChunk &args, ExpressionState &state, Vector &result)
 } // namespace
 
 void Register_MovedPieces(ExtensionLoader &loader) {
-	auto moved_pieces_list_function = ScalarFunction("moved_pieces_list", {LogicalType::BLOB},
-	                                                 LogicalType::LIST(LogicalType::VARCHAR), MovedPiecesList);
+	auto moved_pieces_list_function =
+	    ScalarFunction("moved_pieces_list", {}, LogicalType::LIST(LogicalType::VARCHAR), MovedPiecesList);
+	moved_pieces_list_function.GetSignature().AddParameter("movedata", LogicalType::BLOB);
 	moved_pieces_list_function.SetFallible();
 	loader.RegisterFunction(moved_pieces_list_function);
 
-	auto moved_pieces_function = ScalarFunction("moved_pieces", {LogicalType::BLOB}, LogicalType::VARCHAR, MovedPieces);
+	auto moved_pieces_function = ScalarFunction("moved_pieces", {}, LogicalType::VARCHAR, MovedPieces);
+	moved_pieces_function.GetSignature().AddParameter("movedata", LogicalType::BLOB);
 	moved_pieces_function.SetFallible();
 	loader.RegisterFunction(moved_pieces_function);
 }
