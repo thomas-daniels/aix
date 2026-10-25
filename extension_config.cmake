@@ -1,13 +1,5 @@
 # This file is included by DuckDB's build system. It specifies which extension to load
 
-if (WIN32)
-  if (MINGW)
-    add_compile_definitions(WIN32_LEAN_AND_MEAN)
-  else ()
-    add_compile_definitions(_HAS_STD_BYTE=0)
-  endif()
-endif()
-
 # Extension from this repo
 duckdb_extension_load(aixchess
     SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}
