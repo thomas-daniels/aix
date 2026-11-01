@@ -36,7 +36,7 @@ struct BoardStruct {
 inline void BoardAtPosition(DataChunk &args, ExpressionState &state, Vector &result) {
 	GenericExecutor::ExecuteBinary<PrimitiveType<string_t>, PrimitiveType<int32_t>, BoardStruct>(
 	    args.data[0], args.data[1], result, args.size(), [&](PrimitiveType<string_t> game, PrimitiveType<int32_t> pos) {
-		    diplomat::span<const uint8_t> data = {const_data_ptr_cast(game.val.GetData()), game.val.GetSize()};
+		    auto data = game_to_span(game.val);
 		    BoardStruct b;
 		    auto board_span = diplomat::span<int8_t>(b.board, 64);
 		    auto result = Game::board_at_position(data, pos.val, board_span);

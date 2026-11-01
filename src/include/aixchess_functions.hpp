@@ -79,4 +79,8 @@ inline void RegisterFunc(ExtensionLoader &loader, ScalarFunction fn, std::string
 	loader.RegisterFunction(std::move(info));
 }
 
+inline diplomat::span<const uint8_t> game_to_span(const string_t &game) {
+	return {const_data_ptr_cast(game.GetData()), static_cast<size_t>(game.GetSize())};
+}
+
 } // namespace duckdb

@@ -6,7 +6,7 @@ namespace {
 
 inline void ToUci(DataChunk &args, ExpressionState &state, Vector &result) {
 	UnaryExecutor::Execute<string_t, string_t>(args.data[0], result, args.size(), [&](string_t game) {
-		diplomat::span<const uint8_t> data = {const_data_ptr_cast(game.GetData()), game.GetSize()};
+		auto data = game_to_span(game);
 		auto uci_result = Game::to_uci_string(data);
 		auto uci = UnwrapDecoded<std::string>(std::move(uci_result), "to_uci");
 		return StringVector::AddString(result, uci);

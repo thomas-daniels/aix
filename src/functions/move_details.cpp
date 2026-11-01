@@ -64,7 +64,7 @@ inline void MoveDetailsExtFn(DataChunk &args, ExpressionState &state, Vector &re
 	GenericExecutor::ExecuteUnary<PrimitiveType<string_t>,
 	                              GenericListType<MoveDetailsStruct<false, MoveDetailsExtended>>>(
 	    args.data[0], result, args.size(), [&](PrimitiveType<string_t> game) {
-		    diplomat::span<const uint8_t> data = {const_data_ptr_cast(game.val.GetData()), game.val.GetSize()};
+		    auto data = game_to_span(game.val);
 
 		    auto game_obj_result = Game::from_bytes(data);
 		    auto game_obj = UnwrapDecoded(std::move(game_obj_result), func_name);
@@ -85,7 +85,7 @@ inline void MoveDetailsFn(DataChunk &args, ExpressionState &state, Vector &resul
 
 	GenericExecutor::ExecuteUnary<PrimitiveType<string_t>, GenericListType<MoveDetailsStruct<false, MoveDetails>>>(
 	    args.data[0], result, args.size(), [&](PrimitiveType<string_t> game) {
-		    diplomat::span<const uint8_t> data = {const_data_ptr_cast(game.val.GetData()), game.val.GetSize()};
+		    auto data = game_to_span(game.val);
 
 		    auto game_obj_result = Game::from_bytes(data);
 		    auto game_obj = UnwrapDecoded(std::move(game_obj_result), func_name);
@@ -107,7 +107,7 @@ inline void MoveDetailsExtAtFn(DataChunk &args, ExpressionState &state, Vector &
 	GenericExecutor::ExecuteBinary<PrimitiveType<string_t>, PrimitiveType<int16_t>,
 	                               MoveDetailsStruct<true, MoveDetailsExtended>>(
 	    args.data[0], args.data[1], result, args.size(), [&](PrimitiveType<string_t> game, PrimitiveType<int16_t> ply) {
-		    diplomat::span<const uint8_t> data = {const_data_ptr_cast(game.val.GetData()), game.val.GetSize()};
+		    auto data = game_to_span(game.val);
 
 		    auto game_obj_result = Game::from_bytes(data);
 		    auto game_obj = UnwrapDecoded(std::move(game_obj_result), func_name);
@@ -131,7 +131,7 @@ inline void MoveDetailsAtFn(DataChunk &args, ExpressionState &state, Vector &res
 	GenericExecutor::ExecuteBinary<PrimitiveType<string_t>, PrimitiveType<int16_t>,
 	                               MoveDetailsStruct<true, MoveDetails>>(
 	    args.data[0], args.data[1], result, args.size(), [&](PrimitiveType<string_t> game, PrimitiveType<int16_t> ply) {
-		    diplomat::span<const uint8_t> data = {const_data_ptr_cast(game.val.GetData()), game.val.GetSize()};
+		    auto data = game_to_span(game.val);
 
 		    auto game_obj_result = Game::from_bytes(data);
 		    auto game_obj = UnwrapDecoded(std::move(game_obj_result), func_name);

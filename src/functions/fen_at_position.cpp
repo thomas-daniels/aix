@@ -7,7 +7,7 @@ namespace {
 inline void FenAtPosition(DataChunk &args, ExpressionState &state, Vector &result) {
 	BinaryExecutor::Execute<string_t, int32_t, string_t>(
 	    args.data[0], args.data[1], result, args.size(), [&](string_t game, int32_t pos) -> std::optional<string_t> {
-		    diplomat::span<const uint8_t> data = {const_data_ptr_cast(game.GetData()), game.GetSize()};
+		    auto data = game_to_span(game);
 		    auto fen_result = Game::fen_at_position(data, pos);
 		    auto fen_opt = UnwrapOptionalDecoded<std::string>(std::move(fen_result), "fen_at_position");
 

@@ -76,7 +76,7 @@ const char *BitboardToSquare(uint64_t bb) {
 inline void PiecesAtPosition(DataChunk &args, ExpressionState &state, Vector &result) {
 	GenericExecutor::ExecuteBinary<PrimitiveType<string_t>, PrimitiveType<int32_t>, PiecesAtPositionResult>(
 	    args.data[0], args.data[1], result, args.size(), [&](PrimitiveType<string_t> game, PrimitiveType<int32_t> pos) {
-		    diplomat::span<const uint8_t> data = {const_data_ptr_cast(game.val.GetData()), game.val.GetSize()};
+		    auto data = game_to_span(game.val);
 		    auto bitboards_result = Game::pieces_at_position(data, pos.val);
 		    const auto bitboards_opt =
 		        UnwrapOptionalDecoded<Bitboards>(std::move(bitboards_result), "pieces_at_position");
