@@ -34,7 +34,7 @@ inline void PieceCountsAtPosition(DataChunk &args, ExpressionState &state, Vecto
 	GenericExecutor::ExecuteBinary<PrimitiveType<string_t>, PrimitiveType<int32_t>, PieceCountSquares>(
 	    args.data[0], args.data[1], result, args.size(), [&](PrimitiveType<string_t> game, PrimitiveType<int32_t> pos) {
 		    PieceCountSquares pcs;
-		    diplomat::span<const uint8_t> data = {const_data_ptr_cast(game.val.GetData()), game.val.GetSize()};
+		    auto data = game_to_span(game.val);
 
 		    auto bitboards_result = Game::pieces_at_position(data, pos.val);
 		    const auto bitboards_opt =

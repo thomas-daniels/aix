@@ -6,7 +6,7 @@ namespace {
 
 inline void IsValidMovedata(DataChunk &args, ExpressionState &state, Vector &result) {
 	UnaryExecutor::Execute<string_t, bool>(args.data[0], result, args.size(), [&](string_t game) {
-		diplomat::span<const uint8_t> data = {const_data_ptr_cast(game.GetData()), game.GetSize()};
+		auto data = game_to_span(game);
 		return Game::is_valid_movedata(data);
 	});
 }

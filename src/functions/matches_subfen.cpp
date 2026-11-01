@@ -55,7 +55,7 @@ inline void MatchesSubfen(DataChunk &args, ExpressionState &state, Vector &resul
 	auto subfen = info.subfen;
 
 	UnaryExecutor::Execute<string_t, bool>(game_vector, result, count, [&](string_t game) {
-		diplomat::span<const uint8_t> data = {const_data_ptr_cast(game.GetData()), game.GetSize()};
+		auto data = game_to_span(game);
 		return UnwrapDecoded<bool>(subfen.matches(data), "matches_subfen");
 	});
 }

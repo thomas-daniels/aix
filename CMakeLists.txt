@@ -16,6 +16,10 @@ else()
   set(RUST_LIB_FILENAME libaixrs.a)
 endif()
 
+if(DUCKDB_EXPLICIT_PLATFORM MATCHES "^wasm")
+  set(Rust_CARGO_TARGET wasm32-unknown-emscripten)
+endif()
+
 if (DEFINED Rust_CARGO_TARGET)
   set(RUST_LIB_DEST ${CMAKE_SOURCE_DIR}/../aixrs/target/${Rust_CARGO_TARGET}/release/${RUST_LIB_FILENAME})
   set(RUST_BUILD_CMD cargo build --release --target ${Rust_CARGO_TARGET})

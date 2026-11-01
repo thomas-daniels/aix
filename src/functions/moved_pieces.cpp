@@ -9,7 +9,7 @@ namespace {
 inline void MovedPiecesList(DataChunk &args, ExpressionState &state, Vector &result) {
 	GenericExecutor::ExecuteUnary<PrimitiveType<string_t>, GenericListType<PrimitiveType<string_t>>>(
 	    args.data[0], result, args.size(), [&](PrimitiveType<string_t> game) {
-		    const diplomat::span<const uint8_t> data = {const_data_ptr_cast(game.val.GetData()), game.val.GetSize()};
+		    auto data = game_to_span(game.val);
 		    auto pieces_result = Game::moved_pieces(data);
 		    const auto pieces = UnwrapDecoded<std::string>(std::move(pieces_result), "moved_pieces_list");
 		    const std::vector<char> chars(pieces.begin(), pieces.end());
@@ -24,7 +24,7 @@ inline void MovedPiecesList(DataChunk &args, ExpressionState &state, Vector &res
 
 inline void MovedPieces(DataChunk &args, ExpressionState &state, Vector &result) {
 	UnaryExecutor::Execute<string_t, string_t>(args.data[0], result, args.size(), [&](string_t game) {
-		const diplomat::span<const uint8_t> data = {const_data_ptr_cast(game.GetData()), game.GetSize()};
+		auto data = game_to_span(game);
 		auto pieces_result = Game::moved_pieces(data);
 		const auto pieces = UnwrapDecoded<std::string>(std::move(pieces_result), "moved_pieces");
 		return StringVector::AddString(result, pieces);

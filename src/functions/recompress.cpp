@@ -11,8 +11,8 @@ inline void Recompress(DataChunk &args, ExpressionState &state, Vector &result) 
 			    throw InvalidInputException("Invalid compression level %d: must be 0, 1, or 2", level);
 		    }
 
-		    diplomat::span<const uint8_t> data = {const_data_ptr_cast(game.GetData()), game.GetSize()};
-		    std::vector<uint8_t> buffer(game.GetSize() * 16); // allocate more than enough space
+		    auto data = game_to_span(game);
+		    std::vector<uint8_t> buffer(data.size() * 16); // allocate more than enough space
 		    diplomat::span<uint8_t> buffer_span = {buffer.data(), buffer.size()};
 
 		    auto written = UnwrapDecoded<size_t>(Game::recompress(data, level, buffer_span), "recompress");
