@@ -99,7 +99,7 @@ inline void ScoutfishQuery(DataChunk &args, ExpressionState &state, Vector &resu
 	} else {
 		GenericExecutor::ExecuteUnary<PrimitiveType<string_t>, GenericListType<PrimitiveType<uint16_t>>>(
 		    game_vector, result, count, [&](PrimitiveType<string_t> game) {
-			    diplomat::span<const uint8_t> data = {const_data_ptr_cast(game.val.GetData()), game.val.GetSize()};
+			    auto data = game_to_span(game);
 			    const auto plies_data_size = 16;
 			    uint32_t plies_data[plies_data_size] = {0};
 			    const auto query_result =
