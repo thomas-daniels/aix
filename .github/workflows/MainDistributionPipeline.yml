@@ -17,4 +17,5 @@ jobs:
       ci_tools_version: v2.0-cyanoptera
       extension_name: aixchess
       extra_toolchains: rust
-      opt_in_archs: windows_arm64
+      exclude_archs: 'linux_amd64;linux_arm64;osx_arm64;windows_amd64;windows_amd64_mingw;wasm_mvp;wasm_threads'
+      opt_in_archs: wasm_eh
